@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: backend
+    name: yeka-library-backend
     env: node
     plan: free
     buildCommand: "./render-build.sh"
@@ -8,10 +8,12 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 3000
       - key: API_VERSION
         value: v1
       - key: MONGODB_URI
-        sync: false
+        sync: false  # Set this manually in Render dashboard
       - key: JWT_ACCESS_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -21,36 +23,26 @@ services:
       - key: JWT_REFRESH_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        value: ${frontend.url}
+        sync: false  # Set to your ET hosting domain e.g. https://yourdomain.com
       - key: SOCKET_CORS_ORIGIN
-        value: ${frontend.url}
+        sync: false  # Same as CORS_ORIGIN
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
         value: 100
       - key: LOG_LEVEL
         value: info
+      - key: LOG_FILE
+        value: logs/app.log
       - key: ADMIN_EMAIL
         value: admin@yekalibrary.gov.et
       - key: ADMIN_PASSWORD
+        sync: false  # Set this manually in Render dashboard
+      - key: CLOUDINARY_CLOUD_NAME
         sync: false
-  - type: web
-    name: frontend
-    env: static
-    plan: free
-    rootDir: frontend
-    staticPublishPath: ./build
-    buildCommand: "npm install && npm run build"
-    envVars:
-      - key: REACT_APP_API_URL
-        value: ${backend.url}/api/v1
-      - key: REACT_APP_NAME
-        value: Yeka Sub City Library
-      - key: REACT_APP_VERSION
-        value: 1.0.0
-      - key: REACT_APP_ENABLE_SOCKET
-        value: true
-      - key: REACT_APP_ENABLE_NOTIFICATIONS
-        value: true
-      - key: GENERATE_SOURCEMAP
-        value: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: MONGODB_TEST_URI
+        value: mongodb://localhost:27017/digital-library-test

@@ -113,5 +113,6 @@ ehthumbs.db
 Thumbs.db
 
 # Build outputs
-dist/
-build/
+# dist/ - Keep this for backend deployment (TypeScript compiled output)
+frontend/build/  # Frontend build is regenerated on deployment
+.env.production.example

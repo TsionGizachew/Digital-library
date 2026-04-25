@@ -1,0 +1,17 @@
+{
+  "short_name": "Yeka Library",
+  "name": "Yeka Sub City Library",
+  "description": "Digital Library Management System for Yeka Sub City",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#C62828",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary"
+}
