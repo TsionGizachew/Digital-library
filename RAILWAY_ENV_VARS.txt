@@ -1,0 +1,74 @@
+========================================
+RAILWAY ENVIRONMENT VARIABLES
+Copy these to Railway Dashboard
+========================================
+
+⚠️ IMPORTANT: Add these in Railway dashboard, NOT in .env file!
+
+Go to: Railway Project → Variables Tab → Add Variable
+
+========================================
+REQUIRED VARIABLES
+========================================
+
+NODE_ENV=production
+PORT=3000
+API_VERSION=v1
+
+MONGODB_URI=mongodb+srv://ashenafidejene75:LaewpbBmdkaFqIqL@cluster0.dolqtm6.mongodb.net/library?retryWrites=true&w=majority
+
+MONGODB_TEST_URI=mongodb://localhost:27017/digital-library-test
+
+JWT_ACCESS_SECRET=yeka-library-super-secret-access-token-key-2024-production
+
+JWT_REFRESH_SECRET=yeka-library-super-secret-refresh-token-key-2024-production
+
+JWT_ACCESS_EXPIRES_IN=15m
+
+JWT_REFRESH_EXPIRES_IN=7d
+
+CORS_ORIGIN=https://yourdomain.com,https://www.yourdomain.com
+
+SOCKET_CORS_ORIGIN=https://yourdomain.com,https://www.yourdomain.com
+
+RATE_LIMIT_WINDOW_MS=900000
+
+RATE_LIMIT_MAX_REQUESTS=100
+
+LOG_LEVEL=info
+
+LOG_FILE=logs/app.log
+
+ADMIN_EMAIL=admin@yekalibrary.gov.et
+
+ADMIN_PASSWORD=ChangeThisPassword123!
+
+CLOUDINARY_CLOUD_NAME=dtkg4wfr2
+
+CLOUDINARY_API_KEY=284779213721152
+
+CLOUDINARY_API_SECRET=uyh6m8MD4KL_WJCayFBE5kX-8no
+
+========================================
+OPTIONAL VARIABLES (for email)
+========================================
+
+EMAIL_USER=your-email@gmail.com
+
+EMAIL_PASSWORD=your-app-password
+
+EMAIL_FROM=noreply@yekalibrary.gov.et
+
+EMAIL_FROM_NAME=Yeka Digital Library
+
+========================================
+AFTER ADDING VARIABLES
+========================================
+
+1. Click "Redeploy" in Railway
+2. Wait for build to complete
+3. Test: https://your-app.up.railway.app/health
+4. Update CORS_ORIGIN with your actual domain
+5. Deploy frontend to ET hosting
+
+========================================

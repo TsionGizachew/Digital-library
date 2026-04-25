@@ -56,8 +56,11 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# Environment variables
+# Environment variables - NEVER COMMIT THESE!
 .env
+.env.*
+!.env.example
+!.env.production.example
 .env.local
 .env.development.local
 .env.test.local
