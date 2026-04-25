@@ -32,14 +32,10 @@ const FeaturedAnnouncements: React.FC = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': 
-        return 'bg-error-500 text-white shadow-lg shadow-error-500/30';
-      case 'high': 
-        return 'bg-warning-500 text-white shadow-lg shadow-warning-500/30';
-      case 'medium': 
-        return 'bg-cultural-ethiopian-yellow-500 text-white shadow-lg shadow-cultural-ethiopian-yellow-500/30';
-      default: 
-        return 'bg-neutral-400 text-white shadow-lg shadow-neutral-400/30';
+      case 'urgent': return 'bg-error-500 text-white';
+      case 'high':   return 'bg-accent-500 text-white';
+      case 'medium': return 'bg-primary-500 text-white';
+      default:       return 'bg-neutral-400 text-white';
     }
   };
 
@@ -65,10 +61,10 @@ const FeaturedAnnouncements: React.FC = () => {
               onClick={() => navigate('/announcements')}
             >
               <div className="flex items-start justify-between mb-3">
-                <span className={`px-3 py-1 text-xs font-semibold rounded-full capitalize ${getPriorityColor(announcement.priority)}`}>
+                <span className={`px-3 py-1 text-xs font-semibold rounded-full capitalize shadow-sm ${getPriorityColor(announcement.priority)}`}>
                   {announcement.priority}
                 </span>
-                <MegaphoneIcon className="w-5 h-5 text-cultural-ethiopian-green-500" />
+                <MegaphoneIcon className="w-5 h-5 text-primary-500" />
               </div>
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2 line-clamp-2">
                 {announcement.title}
@@ -78,7 +74,7 @@ const FeaturedAnnouncements: React.FC = () => {
               </p>
               <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
                 <span>{new Date(announcement.publishDate).toLocaleDateString()}</span>
-                <span className="text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400 font-medium">Read more →</span>
+                <span className="text-primary-600 dark:text-primary-400 font-medium">Read more →</span>
               </div>
             </motion.div>
           ))}

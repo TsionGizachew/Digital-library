@@ -130,12 +130,12 @@ const BooksPage: React.FC = () => {
         {/* Enhanced Page Header */}
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="h-1 w-12 bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 rounded-full" aria-hidden="true"></div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cultural-ethiopian-green-600 to-cultural-ethiopian-yellow-600 bg-clip-text text-transparent">
+            <div className="h-1 w-10 bg-gradient-to-r from-primary-500 to-brand-500 rounded-full" aria-hidden="true"></div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-100">
               Book Catalog
             </h1>
           </div>
-          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 max-w-2xl">
+          <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl">
             Explore our extensive collection of books across various categories. Discover knowledge, inspiration, and stories that transform lives.
           </p>
         </div>
@@ -312,12 +312,12 @@ const BooksPage: React.FC = () => {
                   }}
                 >
                   {/* Enhanced Book Cover */}
-                  <div className={`relative bg-gradient-to-br from-cultural-ethiopian-green-50 via-cultural-ethiopian-yellow-50 to-cultural-ethiopian-green-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-shadow duration-300 ${
+                  <div className={`relative bg-gradient-to-br from-primary-50 to-brand-50 dark:from-primary-950 dark:to-brand-950 rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-shadow duration-300 ${
                     viewMode === 'grid' ? 'aspect-[3/4] mb-2 sm:mb-4' : 'w-full sm:w-20 h-32 sm:h-28 flex-shrink-0'
                   }`} aria-hidden="true">
-                    <div className="absolute inset-0 bg-gradient-to-br from-cultural-ethiopian-green-50 to-cultural-ethiopian-yellow-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center p-2">
-                        <div className={`bg-gradient-to-br from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 rounded-lg flex items-center justify-center mx-auto mb-1 shadow-lg ${
+                        <div className={`bg-gradient-to-br from-primary-500 to-brand-500 rounded-lg flex items-center justify-center mx-auto mb-1 shadow-lg ${
                           viewMode === 'grid' ? 'w-10 h-10 sm:w-16 sm:h-16' : 'w-8 h-8'
                         }`}>
                           <span className={`text-white font-bold ${
@@ -353,7 +353,7 @@ const BooksPage: React.FC = () => {
 
                   {/* Enhanced Book Info */}
                   <div className={viewMode === 'grid' ? '' : 'flex-1 min-w-0 w-full sm:w-auto'}>
-                    <h3 className={`text-sm sm:text-base font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-cultural-ethiopian-green-600 dark:group-hover:text-cultural-ethiopian-green-400 transition-colors duration-200 ${
+                    <h3 className={`text-sm sm:text-base font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 ${
                       viewMode === 'grid' ? 'mb-1 line-clamp-2' : 'mb-1 line-clamp-1 sm:truncate'
                     }`}>
                       {book.title}
@@ -381,7 +381,7 @@ const BooksPage: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] sm:text-xs text-white font-medium bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-sm" aria-label={`Category: ${book.category}`}>
+                      <span className="text-[10px] sm:text-xs text-white font-medium bg-gradient-to-r from-primary-500 to-brand-500 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-sm" aria-label={`Category: ${book.category}`}>
                         {book.category}
                       </span>
                     </div>
@@ -389,7 +389,7 @@ const BooksPage: React.FC = () => {
                     {viewMode === 'list' && (
                       <div className="mt-2 flex items-center justify-between">
                         <div className="text-sm text-neutral-600 dark:text-neutral-400 font-medium">
-                          <span>Available: <span className="font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">{book.availability.availableCopies}</span>/{book.availability.totalCopies}</span>
+                          <span>Available: <span className="font-bold text-primary-600 dark:text-primary-400">{book.availability.availableCopies}</span>/{book.availability.totalCopies}</span>
                         </div>
                       </div>
                     )}

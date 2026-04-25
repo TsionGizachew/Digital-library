@@ -96,9 +96,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-neutral-700 dark:text-neutral-300 hover:text-cultural-ethiopian-green-600 dark:hover:text-cultural-ethiopian-green-400 px-2 lg:px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap"
+                className="text-neutral-600 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 px-2 lg:px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap relative group"
               >
                 {item.name}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-brand-500 group-hover:w-full transition-all duration-300 rounded-full" />
               </Link>
             ))}
           </nav>
@@ -113,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-cultural-ethiopian-green-500 focus:border-transparent transition-colors duration-200"
+                className="block w-full pl-10 pr-3 py-2 border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
                 placeholder={t('header.searchPlaceholder')}
               />
             </form>
@@ -224,7 +225,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-cultural-ethiopian-green-500 focus:border-transparent transition-colors duration-200"
+              className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
               placeholder={t('header.searchPlaceholder')}
             />
           </form>
@@ -246,7 +247,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="block px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-300 hover:text-cultural-ethiopian-green-600 dark:hover:text-cultural-ethiopian-green-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-md transition-colors duration-200 break-words"
+                  className="block px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-neutral-800 rounded-md transition-colors duration-200 break-words"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}

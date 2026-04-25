@@ -80,52 +80,52 @@ const Footer: React.FC = () => {
           {/* Library Info */}
           <motion.div variants={itemVariants} className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center mb-3 sm:mb-4">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 rounded-lg flex items-center justify-center shadow-md">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-primary-500 to-brand-500 rounded-xl flex items-center justify-center shadow-glow">
                 <BookOpenIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div className="ml-2 sm:ml-3">
-                <h3 className="text-base sm:text-xl font-bold text-white">
+              <div className="ml-3">
+                <h3 className="text-base sm:text-lg font-bold text-white">
                   {t('header.libraryName')}
                 </h3>
               </div>
             </div>
-            <p className="text-sm sm:text-base text-neutral-400 mb-4 sm:mb-6 leading-relaxed break-words">
+            <p className="text-sm text-neutral-400 mb-5 leading-relaxed break-words">
               {language === 'am' ? 'ከ 1995 ዓም ጀምሮ የየካ ክፍለ ከተማ ህዝብን በእውቀም፣ በሀብቶች እና በትምህርታዊ ፕሮግራሞች እናገልግላለን።' : language === 'om' ? 'Bara 1995 jalqabee hawaasa Aanaa Magaalaa Yeekaa beekumsa, qabeenya fi sagantaalee barnootaan tajaajilaa jirra.' : 'Serving the Yeka Sub City community with knowledge, resources, and educational programs since 1995.'}
             </p>
             
             {/* Contact Info */}
-            <div className="space-y-2 sm:space-y-3">
-              <div className="flex items-start">
-                <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm break-words">{t('footer.address')}</span>
+            <div className="space-y-2.5">
+              <div className="flex items-start gap-2.5">
+                <MapPinIcon className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm text-neutral-400 break-words">{t('footer.address')}</span>
               </div>
-              <div className="flex items-start">
-                <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm break-words">{t('footer.phone')}</span>
+              <div className="flex items-start gap-2.5">
+                <PhoneIcon className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm text-neutral-400 break-words">{t('footer.phone')}</span>
               </div>
-              <div className="flex items-start">
-                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm break-all">{t('footer.email')}</span>
+              <div className="flex items-start gap-2.5">
+                <EnvelopeIcon className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm text-neutral-400 break-all">{t('footer.email')}</span>
               </div>
-              <div className="flex items-start">
-                <ClockIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm break-words">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
+              <div className="flex items-start gap-2.5">
+                <ClockIcon className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm text-neutral-400 break-words">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
               </div>
             </div>
           </motion.div>
 
           {/* Footer Links */}
-          {footerSections.map((section, index) => (
+          {footerSections.map((section) => (
             <motion.div key={section.title} variants={itemVariants}>
-              <h4 className="text-sm sm:text-lg font-semibold text-white mb-3 sm:mb-4 break-words">
+              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
                 {section.title}
               </h4>
-              <ul className="space-y-1.5 sm:space-y-2">
+              <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-neutral-400 hover:text-cultural-ethiopian-green-400 transition-colors duration-200 text-xs sm:text-sm block break-words"
+                      className="text-neutral-400 hover:text-primary-400 transition-colors duration-200 text-sm block break-words"
                     >
                       {link.name}
                     </Link>
@@ -142,23 +142,17 @@ const Footer: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-neutral-800"
+          className="mt-10 pt-6 border-t border-neutral-800"
         >
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-            <div className="text-xs sm:text-sm text-neutral-400 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div className="text-xs sm:text-sm text-neutral-500 text-center sm:text-left">
               {t('footer.copyright')}
             </div>
-            <div className="flex space-x-4 sm:space-x-6">
-              <a
-                href="/privacy"
-                className="text-xs sm:text-sm text-neutral-400 hover:text-cultural-ethiopian-green-400 transition-colors duration-200"
-              >
+            <div className="flex space-x-5">
+              <a href="/privacy" className="text-xs sm:text-sm text-neutral-500 hover:text-primary-400 transition-colors duration-200">
                 {t('footer.privacy')}
               </a>
-              <a
-                href="/terms"
-                className="text-xs sm:text-sm text-neutral-400 hover:text-cultural-ethiopian-green-400 transition-colors duration-200"
-              >
+              <a href="/terms" className="text-xs sm:text-sm text-neutral-500 hover:text-primary-400 transition-colors duration-200">
                 {t('footer.terms')}
               </a>
             </div>

@@ -117,31 +117,31 @@ const FeaturedBooks: React.FC = () => {
             <div className="flex space-x-1 bg-white dark:bg-neutral-700 rounded-lg p-1 shadow-soft">
               <button
                 onClick={() => setActiveTab('popular')}
-                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                   activeTab === 'popular'
-                    ? 'bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 text-white shadow-md'
+                    ? 'bg-primary-500 text-white shadow-md'
                     : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600'
-                } transition-colors duration-200`}
+                }`}
               >
                 {t('home.featured.popular')}
               </button>
               <button
                 onClick={() => setActiveTab('newArrivals')}
-                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                   activeTab === 'newArrivals'
-                    ? 'bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 text-white shadow-md'
+                    ? 'bg-primary-500 text-white shadow-md'
                     : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600'
-                } transition-colors duration-200`}
+                }`}
               >
                 {t('home.featured.newArrivals')}
               </button>
               <button
                 onClick={() => setActiveTab('recommended')}
-                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                   activeTab === 'recommended'
-                    ? 'bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 text-white shadow-md'
+                    ? 'bg-primary-500 text-white shadow-md'
                     : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600'
-                } transition-colors duration-200`}
+                }`}
               >
                 {t('home.featured.recommended')}
               </button>
@@ -226,7 +226,7 @@ const FeaturedBooks: React.FC = () => {
                                 className="absolute top-2 right-2 p-2 rounded-full bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-neutral-800 transition-colors duration-200"
                               >
                                 {favorites.has(book.id) ? (
-                                  <HeartSolidIcon className="w-4 h-4 text-cultural-ethiopian-green-500" />
+                                  <HeartSolidIcon className="w-4 h-4 text-primary-500" />
                                 ) : (
                                   <HeartIcon className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
                                 )}
@@ -235,7 +235,7 @@ const FeaturedBooks: React.FC = () => {
 
                             {/* Book Info */}
                             <div>
-                              <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 mb-1 line-clamp-2 group-hover:text-cultural-ethiopian-green-600 dark:group-hover:text-cultural-ethiopian-green-400 transition-colors duration-200">
+                              <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 mb-1 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
                                 {book.title}
                               </h3>
                               <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
@@ -267,9 +267,9 @@ const FeaturedBooks: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
                     index === currentSlide
-                      ? 'bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500'
+                      ? 'bg-primary-500 w-6'
                       : 'bg-neutral-300 dark:bg-neutral-600'
                   }`}
                 />

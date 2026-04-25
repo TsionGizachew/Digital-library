@@ -36,16 +36,11 @@ const EventsPage: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'upcoming':
-        return 'bg-cultural-ethiopian-yellow-500 text-white shadow-lg shadow-cultural-ethiopian-yellow-500/30';
-      case 'ongoing':
-        return 'bg-cultural-ethiopian-green-500 text-white shadow-lg shadow-cultural-ethiopian-green-500/30';
-      case 'completed':
-        return 'bg-neutral-500 text-white shadow-lg shadow-neutral-500/30';
-      case 'cancelled':
-        return 'bg-error-500 text-white shadow-lg shadow-error-500/30';
-      default:
-        return 'bg-neutral-400 text-white shadow-lg shadow-neutral-400/30';
+      case 'upcoming':  return 'bg-primary-500 text-white shadow-md';
+      case 'ongoing':   return 'bg-brand-500 text-white shadow-md';
+      case 'completed': return 'bg-neutral-500 text-white shadow-md';
+      case 'cancelled': return 'bg-error-500 text-white shadow-md';
+      default:          return 'bg-neutral-400 text-white shadow-md';
     }
   };
 
@@ -80,12 +75,12 @@ const EventsPage: React.FC = () => {
         {/* Enhanced Page Header - Mobile Optimized */}
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
-            <div className="h-1 w-8 sm:w-12 bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 rounded-full" aria-hidden="true"></div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cultural-ethiopian-green-600 to-cultural-ethiopian-yellow-600 bg-clip-text text-transparent">
+            <div className="h-1 w-8 sm:w-10 bg-gradient-to-r from-primary-500 to-brand-500 rounded-full" aria-hidden="true"></div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-100">
               Library Events
             </h1>
           </div>
-          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed">
             Join our community events, workshops, and programs. Connect, learn, and grow together with fellow book lovers and knowledge seekers.
           </p>
         </div>
@@ -133,16 +128,16 @@ const EventsPage: React.FC = () => {
                 }}
               >
                 {/* Enhanced Event Image/Placeholder - Mobile Optimized */}
-                <div className="relative h-40 sm:h-48 bg-gradient-to-br from-cultural-ethiopian-green-100 via-cultural-ethiopian-yellow-50 to-cultural-ethiopian-green-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 rounded-lg mb-3 sm:mb-4 overflow-hidden shadow-md group-hover:shadow-xl transition-shadow duration-300" aria-hidden="true">
+                <div className="relative h-40 sm:h-48 bg-gradient-to-br from-primary-50 to-brand-50 dark:from-primary-950 dark:to-brand-950 rounded-lg mb-3 sm:mb-4 overflow-hidden shadow-md group-hover:shadow-xl transition-shadow duration-300" aria-hidden="true">
                   {event.image ? (
                     <img src={event.image} alt={`${event.title} event image`} className="w-full h-full object-cover" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center">
-                        <div className="bg-gradient-to-br from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 rounded-full p-3 sm:p-4 mx-auto mb-2 shadow-lg">
+                        <div className="bg-gradient-to-br from-primary-500 to-brand-500 rounded-full p-3 sm:p-4 mx-auto mb-2 shadow-lg">
                           <CalendarDaysIcon className="w-8 h-8 sm:w-12 sm:h-12 text-white" aria-hidden="true" />
                         </div>
-                        <p className="text-xs sm:text-sm font-medium text-neutral-600 dark:text-neutral-400">Event Image</p>
+                        <p className="text-xs sm:text-sm font-medium text-neutral-500 dark:text-neutral-400">Event Image</p>
                       </div>
                     </div>
                   )}
@@ -157,7 +152,7 @@ const EventsPage: React.FC = () => {
 
                 {/* Enhanced Event Info - Mobile Optimized */}
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2 group-hover:text-cultural-ethiopian-green-600 dark:group-hover:text-cultural-ethiopian-green-400 transition-colors duration-200 line-clamp-2">
+                  <h3 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 line-clamp-2">
                     {event.title}
                   </h3>
                   
@@ -168,18 +163,18 @@ const EventsPage: React.FC = () => {
                   {/* Enhanced Event Details - Mobile Optimized */}
                   <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
                     <div className="flex items-center text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-800 rounded-lg p-1.5 sm:p-2">
-                      <CalendarDaysIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 flex-shrink-0 text-cultural-ethiopian-green-500" />
+                      <CalendarDaysIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 flex-shrink-0 text-primary-500" />
                       <span className="font-medium truncate">{formatDate(event.date)}</span>
                     </div>
                     
                     <div className="flex items-center text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-800 rounded-lg p-1.5 sm:p-2">
-                      <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 flex-shrink-0 text-cultural-ethiopian-yellow-500" />
+                      <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 flex-shrink-0 text-brand-500" />
                       <span className="font-medium truncate">{event.location}</span>
                     </div>
                   </div>
 
                   {/* Enhanced Organizer - Mobile Optimized */}
-                  <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-gradient-to-r from-cultural-ethiopian-green-50 to-cultural-ethiopian-yellow-50 dark:from-neutral-800 dark:to-neutral-700 rounded-lg p-1.5 sm:p-2">
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-primary-50 dark:bg-primary-950 rounded-lg p-1.5 sm:p-2">
                     <span className="font-semibold">Organized by:</span> <span className="truncate inline-block max-w-[calc(100%-90px)] align-bottom">{event.organizer}</span>
                   </div>
                 </div>

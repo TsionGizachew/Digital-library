@@ -19,53 +19,40 @@ const HeroSection: React.FC = () => {
         console.error('Error fetching home page stats:', error);
       }
     };
-
     fetchStats();
   }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
   };
 
   const floatingVariants = {
     animate: {
       y: [0, -10, 0],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      },
+      transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
     },
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-cultural-ethiopian-green-50 via-white to-cultural-ethiopian-yellow-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5 dark:opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ef4444' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
-      </div>
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary-950 via-primary-900 to-brand-900 dark:from-neutral-950 dark:via-primary-950 dark:to-neutral-900">
+      {/* Subtle dot pattern overlay */}
+      <div className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)`,
+          backgroundSize: '32px 32px',
+        }}
+      />
+      {/* Glow blobs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-brand-500/20 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-32">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -74,10 +61,16 @@ const HeroSection: React.FC = () => {
         >
           {/* Left Content */}
           <div className="text-center lg:text-left">
+            {/* Badge */}
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
+              <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" />
+              <span className="text-xs sm:text-sm font-medium text-white/90">Yeka Sub City Public Library</span>
+            </motion.div>
+
             <motion.div variants={itemVariants}>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-neutral-900 dark:text-neutral-100 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight">
                 <span className="block">{t('home.hero.title').split(' ').slice(0, 3).join(' ')}</span>
-                <span className="block text-gradient">
+                <span className="block mt-1 bg-gradient-to-r from-accent-300 to-brand-300 bg-clip-text text-transparent">
                   {t('home.hero.title').split(' ').slice(3).join(' ')}
                 </span>
               </h1>
@@ -85,29 +78,27 @@ const HeroSection: React.FC = () => {
 
             <motion.p
               variants={itemVariants}
-              className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-neutral-600 dark:text-neutral-300 leading-relaxed max-w-2xl mx-auto lg:mx-0"
+              className="mt-5 text-base sm:text-lg text-white/70 leading-relaxed max-w-xl mx-auto lg:mx-0"
             >
               {t('home.hero.subtitle')}
             </motion.p>
 
             <motion.div
               variants={itemVariants}
-              className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
+              className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
             >
               <button
-                className="btn-primary text-sm sm:text-base lg:text-lg px-6 sm:px-8 py-2.5 sm:py-3 group w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-400 active:bg-accent-600 text-white font-semibold px-7 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-accent-500/30 hover:shadow-xl group"
                 onClick={() => {
-                  const searchSection = document.getElementById('search-section');
-                  if (searchSection) {
-                    searchSection.scrollIntoView({ behavior: 'smooth' });
-                  }
+                  const el = document.getElementById('search-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
                 {t('home.hero.cta')}
-                <ArrowRightIcon className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
               </button>
               <button
-                className="btn-outline text-sm sm:text-base lg:text-lg px-6 sm:px-8 py-2.5 sm:py-3 w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold px-7 py-3 rounded-xl transition-all duration-200 backdrop-blur-sm"
                 onClick={() => navigate('/login')}
               >
                 {t('home.hero.membershipCta')}
@@ -117,119 +108,89 @@ const HeroSection: React.FC = () => {
             {/* Stats */}
             <motion.div
               variants={itemVariants}
-              className="mt-8 sm:mt-10 md:mt-12 grid grid-cols-3 gap-3 sm:gap-4 md:gap-6 text-center lg:text-left"
+              className="mt-12 grid grid-cols-3 gap-4 text-center lg:text-left"
             >
-              <div>
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
-                  {stats ? `${(stats.totalBooks / 1000).toFixed(1)}K+` : '...'}
+              {[
+                { value: stats ? `${(stats.totalBooks / 1000).toFixed(1)}K+` : '—', label: t('home.stats.booksAvailable') },
+                { value: stats ? `${(stats.totalMembers / 1000).toFixed(1)}K+` : '—', label: t('home.stats.activeMembers') },
+                { value: stats ? `${stats.totalCategories}+` : '—', label: t('home.stats.categories') },
+              ].map((stat) => (
+                <div key={stat.label} className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-white/10">
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-accent-300">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-white/60 mt-0.5">{stat.label}</div>
                 </div>
-                <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
-                  {t('home.stats.booksAvailable')}
-                </div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
-                  {stats ? `${(stats.totalMembers / 1000).toFixed(1)}K+` : '...'}
-                </div>
-                <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
-                  {t('home.stats.activeMembers')}
-                </div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
-                  {stats ? `${stats.totalCategories}+` : '...'}
-                </div>
-                <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
-                  {t('home.stats.categories')}
-                </div>
-              </div>
+              ))}
             </motion.div>
           </div>
 
-          {/* Right Content - Illustration */}
+          {/* Right Content — Illustration */}
           <div className="relative mt-8 lg:mt-0">
-            <motion.div
-              variants={itemVariants}
-              className="relative z-10"
-            >
-              {/* Main Illustration Container */}
-              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                {/* Background Circle */}
-                <div className="absolute inset-0 bg-gradient-to-br from-cultural-ethiopian-green-100 to-cultural-ethiopian-yellow-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 rounded-full transform rotate-6"></div>
-                
-                {/* Floating Elements */}
-                <motion.div
-                  variants={floatingVariants}
-                  animate="animate"
-                  className="absolute top-2 sm:top-4 right-2 sm:right-4 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
-                >
-                  <BookOpenIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-cultural-ethiopian-green-500" />
+            <motion.div variants={itemVariants} className="relative z-10">
+              <div className="relative w-full max-w-sm sm:max-w-md mx-auto">
+                {/* Glow ring */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/30 to-brand-500/30 rounded-3xl blur-2xl" />
+
+                {/* Floating chips */}
+                <motion.div variants={floatingVariants} animate="animate"
+                  className="absolute -top-4 -right-4 bg-white dark:bg-neutral-800 rounded-2xl shadow-large px-3 py-2 flex items-center gap-2 z-20">
+                  <div className="w-8 h-8 bg-accent-100 dark:bg-accent-900/40 rounded-lg flex items-center justify-center">
+                    <BookOpenIcon className="w-4 h-4 text-accent-600 dark:text-accent-400" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-neutral-900 dark:text-neutral-100">15K+ Books</div>
+                    <div className="text-[10px] text-neutral-500">Available now</div>
+                  </div>
                 </motion.div>
 
-                <motion.div
-                  variants={floatingVariants}
-                  animate="animate"
-                  style={{ animationDelay: '1s' }}
-                  className="absolute bottom-4 sm:bottom-8 left-2 sm:left-4 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
-                >
-                  <UsersIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-success-500" />
+                <motion.div variants={floatingVariants} animate="animate" style={{ animationDelay: '1s' }}
+                  className="absolute -bottom-4 -left-4 bg-white dark:bg-neutral-800 rounded-2xl shadow-large px-3 py-2 flex items-center gap-2 z-20">
+                  <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/40 rounded-lg flex items-center justify-center">
+                    <UsersIcon className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-neutral-900 dark:text-neutral-100">5K+ Members</div>
+                    <div className="text-[10px] text-neutral-500">Active readers</div>
+                  </div>
                 </motion.div>
 
-                <motion.div
-                  variants={floatingVariants}
-                  animate="animate"
-                  style={{ animationDelay: '2s' }}
-                  className="absolute top-1/2 left-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
-                >
-                  <GlobeAltIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-cultural-ethiopian-yellow-500" />
+                <motion.div variants={floatingVariants} animate="animate" style={{ animationDelay: '2s' }}
+                  className="absolute top-1/2 -left-8 bg-white dark:bg-neutral-800 rounded-2xl shadow-large px-3 py-2 flex items-center gap-2 z-20">
+                  <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900/40 rounded-lg flex items-center justify-center">
+                    <GlobeAltIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-neutral-900 dark:text-neutral-100">3 Languages</div>
+                    <div className="text-[10px] text-neutral-500">EN · AM · OM</div>
+                  </div>
                 </motion.div>
 
-                {/* Central Image Placeholder */}
-                <div className="relative bg-white dark:bg-neutral-800 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mx-4 sm:mx-6 md:mx-8">
-                  <div className="aspect-square bg-gradient-to-br from-cultural-ethiopian-green-100 to-cultural-ethiopian-yellow-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 rounded-lg sm:rounded-xl flex items-center justify-center">
+                {/* Central card */}
+                <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 sm:p-8">
+                  <div className="aspect-square bg-gradient-to-br from-primary-800/60 to-brand-800/60 rounded-2xl flex items-center justify-center">
                     <div className="text-center">
-                      <BookOpenIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 text-cultural-ethiopian-green-500 mx-auto mb-2 sm:mb-3 md:mb-4" />
-                      <div className="space-y-1.5 sm:space-y-2">
-                        <div className="h-2 sm:h-2.5 md:h-3 bg-cultural-ethiopian-green-200 dark:bg-cultural-ethiopian-green-700 rounded w-3/4 mx-auto"></div>
-                        <div className="h-2 sm:h-2.5 md:h-3 bg-cultural-ethiopian-green-200 dark:bg-cultural-ethiopian-green-700 rounded w-1/2 mx-auto"></div>
-                        <div className="h-2 sm:h-2.5 md:h-3 bg-cultural-ethiopian-green-200 dark:bg-cultural-ethiopian-green-700 rounded w-2/3 mx-auto"></div>
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-accent-400 to-brand-400 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-accent">
+                        <BookOpenIcon className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-2.5 bg-white/20 rounded-full w-3/4 mx-auto" />
+                        <div className="h-2.5 bg-white/15 rounded-full w-1/2 mx-auto" />
+                        <div className="h-2.5 bg-white/10 rounded-full w-2/3 mx-auto" />
                       </div>
                     </div>
                   </div>
                 </div>
-
-                {/* Decorative Elements */}
-                <div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 w-6 h-6 sm:w-8 sm:h-8 bg-cultural-ethiopian-green-500 rounded-full opacity-20"></div>
-                <div className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-success-500 rounded-full opacity-30"></div>
-                <div className="absolute top-1/4 -right-3 sm:-right-6 w-3 h-3 sm:w-4 sm:h-4 bg-cultural-ethiopian-yellow-500 rounded-full opacity-25"></div>
               </div>
             </motion.div>
           </div>
         </motion.div>
       </div>
 
-      {/* Bottom Wave */}
+      {/* Bottom wave */}
       <div className="absolute bottom-0 left-0 right-0">
-        <svg
-          className="w-full h-12 text-white dark:text-neutral-900"
-          preserveAspectRatio="none"
-          viewBox="0 0 1200 120"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-            opacity=".25"
-            fill="currentColor"
-          />
-          <path
-            d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
-            opacity=".5"
-            fill="currentColor"
-          />
-          <path
-            d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
-            fill="currentColor"
-          />
+        <svg className="w-full h-12 text-white dark:text-neutral-900" preserveAspectRatio="none" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor" />
+          <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="currentColor" />
+          <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor" />
         </svg>
       </div>
     </section>
