@@ -95,7 +95,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white dark:bg-neutral-700 border-0 rounded-xl text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200"
+                  className="w-full pl-12 pr-4 py-4 bg-white dark:bg-neutral-700 border-0 rounded-xl text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-cultural-ethiopian-green-500 transition-all duration-200"
                   placeholder={t('home.search.placeholder')}
                 />
               </div>
@@ -105,7 +105,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="appearance-none bg-white dark:bg-neutral-700 border-0 rounded-xl px-4 py-4 pr-10 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200 cursor-pointer min-w-[200px]"
+                  className="appearance-none bg-white dark:bg-neutral-700 border-0 rounded-xl px-4 py-4 pr-10 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-cultural-ethiopian-green-500 transition-all duration-200 cursor-pointer min-w-[200px]"
                 >
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
@@ -139,7 +139,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   selectedCategory === category.id
-                    ? 'bg-primary-500 text-white shadow-md'
+                    ? 'bg-gradient-to-r from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 text-white shadow-md'
                     : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
                 }`}
               >
@@ -154,7 +154,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
             className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+              <div className="text-2xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
                 15,420
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
@@ -162,7 +162,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
               </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+              <div className="text-2xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
                 156
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
@@ -170,7 +170,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
               </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+              <div className="text-2xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
                 50+
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
@@ -178,7 +178,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
               </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+              <div className="text-2xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
                 24/7
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">

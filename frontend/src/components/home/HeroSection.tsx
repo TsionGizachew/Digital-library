@@ -57,7 +57,7 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-neutral-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+    <section className="relative overflow-hidden bg-gradient-to-br from-cultural-ethiopian-green-50 via-white to-cultural-ethiopian-yellow-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5 dark:opacity-10">
         <div className="absolute inset-0" style={{
@@ -120,7 +120,7 @@ const HeroSection: React.FC = () => {
               className="mt-8 sm:mt-10 md:mt-12 grid grid-cols-3 gap-3 sm:gap-4 md:gap-6 text-center lg:text-left"
             >
               <div>
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
                   {stats ? `${(stats.totalBooks / 1000).toFixed(1)}K+` : '...'}
                 </div>
                 <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
@@ -128,7 +128,7 @@ const HeroSection: React.FC = () => {
                 </div>
               </div>
               <div>
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
                   {stats ? `${(stats.totalMembers / 1000).toFixed(1)}K+` : '...'}
                 </div>
                 <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
@@ -136,7 +136,7 @@ const HeroSection: React.FC = () => {
                 </div>
               </div>
               <div>
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-cultural-ethiopian-green-600 dark:text-cultural-ethiopian-green-400">
                   {stats ? `${stats.totalCategories}+` : '...'}
                 </div>
                 <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
@@ -155,7 +155,7 @@ const HeroSection: React.FC = () => {
               {/* Main Illustration Container */}
               <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 {/* Background Circle */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-full transform rotate-6"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-cultural-ethiopian-green-100 to-cultural-ethiopian-yellow-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 rounded-full transform rotate-6"></div>
                 
                 {/* Floating Elements */}
                 <motion.div
@@ -163,7 +163,7 @@ const HeroSection: React.FC = () => {
                   animate="animate"
                   className="absolute top-2 sm:top-4 right-2 sm:right-4 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
                 >
-                  <BookOpenIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary-500" />
+                  <BookOpenIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-cultural-ethiopian-green-500" />
                 </motion.div>
 
                 <motion.div
@@ -181,27 +181,27 @@ const HeroSection: React.FC = () => {
                   style={{ animationDelay: '2s' }}
                   className="absolute top-1/2 left-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
                 >
-                  <GlobeAltIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-warning-500" />
+                  <GlobeAltIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-cultural-ethiopian-yellow-500" />
                 </motion.div>
 
                 {/* Central Image Placeholder */}
                 <div className="relative bg-white dark:bg-neutral-800 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mx-4 sm:mx-6 md:mx-8">
-                  <div className="aspect-square bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-lg sm:rounded-xl flex items-center justify-center">
+                  <div className="aspect-square bg-gradient-to-br from-cultural-ethiopian-green-100 to-cultural-ethiopian-yellow-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 rounded-lg sm:rounded-xl flex items-center justify-center">
                     <div className="text-center">
-                      <BookOpenIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 text-primary-500 mx-auto mb-2 sm:mb-3 md:mb-4" />
+                      <BookOpenIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 text-cultural-ethiopian-green-500 mx-auto mb-2 sm:mb-3 md:mb-4" />
                       <div className="space-y-1.5 sm:space-y-2">
-                        <div className="h-2 sm:h-2.5 md:h-3 bg-primary-200 dark:bg-primary-700 rounded w-3/4 mx-auto"></div>
-                        <div className="h-2 sm:h-2.5 md:h-3 bg-primary-200 dark:bg-primary-700 rounded w-1/2 mx-auto"></div>
-                        <div className="h-2 sm:h-2.5 md:h-3 bg-primary-200 dark:bg-primary-700 rounded w-2/3 mx-auto"></div>
+                        <div className="h-2 sm:h-2.5 md:h-3 bg-cultural-ethiopian-green-200 dark:bg-cultural-ethiopian-green-700 rounded w-3/4 mx-auto"></div>
+                        <div className="h-2 sm:h-2.5 md:h-3 bg-cultural-ethiopian-green-200 dark:bg-cultural-ethiopian-green-700 rounded w-1/2 mx-auto"></div>
+                        <div className="h-2 sm:h-2.5 md:h-3 bg-cultural-ethiopian-green-200 dark:bg-cultural-ethiopian-green-700 rounded w-2/3 mx-auto"></div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 w-6 h-6 sm:w-8 sm:h-8 bg-primary-500 rounded-full opacity-20"></div>
+                <div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 w-6 h-6 sm:w-8 sm:h-8 bg-cultural-ethiopian-green-500 rounded-full opacity-20"></div>
                 <div className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-success-500 rounded-full opacity-30"></div>
-                <div className="absolute top-1/4 -right-3 sm:-right-6 w-3 h-3 sm:w-4 sm:h-4 bg-warning-500 rounded-full opacity-25"></div>
+                <div className="absolute top-1/4 -right-3 sm:-right-6 w-3 h-3 sm:w-4 sm:h-4 bg-cultural-ethiopian-yellow-500 rounded-full opacity-25"></div>
               </div>
             </motion.div>
           </div>

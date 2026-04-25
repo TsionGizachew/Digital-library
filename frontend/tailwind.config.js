@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Library brand colors with red accents
+        // Enhanced Library brand colors with red accents
         primary: {
           50: '#fef2f2',
           100: '#fee2e2',
@@ -22,7 +22,7 @@ module.exports = {
           900: '#7f1d1d',
           950: '#450a0a',
         },
-        // Neutral colors for light/dark mode
+        // Enhanced neutral colors for light/dark mode
         neutral: {
           50: '#fafafa',
           100: '#f5f5f5',
@@ -36,26 +36,197 @@ module.exports = {
           900: '#171717',
           950: '#0a0a0a',
         },
-        // Success, warning, error colors
+        // Ethiopian cultural colors
+        cultural: {
+          ethiopian: {
+            green: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#228B22', // Traditional Ethiopian green
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            yellow: {
+              50: '#fefce8',
+              100: '#fef9c3',
+              200: '#fef08a',
+              300: '#fde047',
+              400: '#facc15',
+              500: '#FFD700', // Traditional Ethiopian yellow
+              600: '#ca8a04',
+              700: '#a16207',
+              800: '#854d0e',
+              900: '#713f12',
+            },
+            red: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              200: '#fecaca',
+              300: '#fca5a5',
+              400: '#f87171',
+              500: '#DC143C', // Traditional Ethiopian red
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+            },
+          },
+          earth: {
+            50: '#fdf8f6',
+            100: '#f2e8e5',
+            200: '#eaddd7',
+            300: '#e0cfc5',
+            400: '#d2bab0',
+            500: '#bfa094',
+            600: '#a18072',
+            700: '#977669',
+            800: '#846358',
+            900: '#6c5248',
+            950: '#3a2c25',
+          },
+          heritage: {
+            50: '#f8f6f0',
+            100: '#f0ead8',
+            200: '#e1d4b3',
+            300: '#d0b885',
+            400: '#c19d5c',
+            500: '#b5884a',
+            600: '#9f6f3f',
+            700: '#845637',
+            800: '#6d4731',
+            900: '#5a3c2b',
+            950: '#321f16',
+          },
+        },
+        // Enhanced semantic colors
         success: {
           50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
           500: '#22c55e',
           600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+          950: '#052e16',
         },
         warning: {
           50: '#fffbeb',
+          100: '#fef3c7',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#fbbf24',
           500: '#f59e0b',
           600: '#d97706',
+          700: '#b45309',
+          800: '#92400e',
+          900: '#78350f',
+          950: '#451a03',
         },
         error: {
           50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
           500: '#ef4444',
           600: '#dc2626',
+          700: '#b91c1c',
+          800: '#991b1b',
+          900: '#7f1d1d',
+          950: '#450a0a',
+        },
+        info: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#172554',
+        },
+        // Reading culture colors
+        reading: {
+          wisdom: {
+            50: '#eef2ff',
+            100: '#e0e7ff',
+            200: '#c7d2fe',
+            300: '#a5b4fc',
+            400: '#818cf8',
+            500: '#4338ca', // Wisdom blue
+            600: '#4f46e5',
+            700: '#4338ca',
+            800: '#3730a3',
+            900: '#312e81',
+          },
+          knowledge: {
+            50: '#ecfdf5',
+            100: '#d1fae5',
+            200: '#a7f3d0',
+            300: '#6ee7b7',
+            400: '#34d399',
+            500: '#059669', // Knowledge green
+            600: '#047857',
+            700: '#065f46',
+            800: '#064e3b',
+            900: '#022c22',
+          },
+          inspiration: {
+            50: '#fef2f2',
+            100: '#fee2e2',
+            200: '#fecaca',
+            300: '#fca5a5',
+            400: '#f87171',
+            500: '#dc2626', // Inspiration red
+            600: '#b91c1c',
+            700: '#991b1b',
+            800: '#7f1d1d',
+            900: '#450a0a',
+          },
+          focus: {
+            50: '#f8fafc',
+            100: '#f1f5f9',
+            200: '#e2e8f0',
+            300: '#cbd5e1',
+            400: '#94a3b8',
+            500: '#64748b', // Focus gray
+            600: '#475569',
+            700: '#334155',
+            800: '#1e293b',
+            900: '#0f172a',
+          },
+        },
+        // Accessibility colors
+        accessibility: {
+          highContrast: {
+            50: '#ffffff',
+            500: '#000000',
+            900: '#000000',
+          },
+          lowVision: {
+            50: '#fef9e7',
+            100: '#fef3c7',
+            500: '#f59e0b',
+            900: '#78350f',
+          },
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Inter', 'system-ui', 'sans-serif'],
+        ethiopic: ['Noto Sans Ethiopic', 'Nyala', 'Ethiopia Jiret', 'serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],
@@ -120,6 +291,12 @@ module.exports = {
       },
       screens: {
         'xs': '475px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+        '3xl': '1920px',
       },
     },
   },

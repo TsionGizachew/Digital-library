@@ -43,16 +43,16 @@ const FeaturedEvents: React.FC = () => {
               whileHover={{ y: -5 }}
               onClick={() => navigate('/events')}
             >
-              <div className="relative h-48 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-lg mb-4 overflow-hidden">
+              <div className="relative h-48 bg-gradient-to-br from-cultural-ethiopian-green-100 via-cultural-ethiopian-yellow-50 to-cultural-ethiopian-green-100 dark:from-cultural-earth-900 dark:to-cultural-heritage-900 rounded-lg mb-4 overflow-hidden">
                 {event.image ? (
                   <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <CalendarDaysIcon className="w-16 h-16 text-primary-500 opacity-50" />
+                    <CalendarDaysIcon className="w-16 h-16 text-cultural-ethiopian-green-500 opacity-50" />
                   </div>
                 )}
                 <div className="absolute top-3 left-3">
-                  <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary-500 text-white capitalize">
+                  <span className="px-3 py-1 text-xs font-semibold rounded-full bg-cultural-ethiopian-yellow-500 text-white shadow-lg capitalize">
                     {event.status}
                   </span>
                 </div>

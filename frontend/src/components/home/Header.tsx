@@ -6,7 +6,6 @@ import {
   Bars3Icon,
   XMarkIcon,
   UserIcon,
-  BookOpenIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
@@ -14,6 +13,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from '../common/ThemeToggle';
 import LanguageToggle from '../common/LanguageToggle';
+import Logo from '../common/Logo';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -74,16 +74,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo */}
           <div className="flex items-center min-w-0">
-            <div className="flex-shrink-0 flex items-center">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-                <BookOpenIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <div className="ml-2 sm:ml-3 hidden xs:block">
+            <Link to="/" className="flex-shrink-0 flex items-center space-x-2 sm:space-x-3">
+              <Logo
+                variant="icon"
+                size="sm"
+                showText={false}
+                priority={true}
+                className="w-8 h-8 sm:w-10 sm:h-10"
+              />
+              <div className="hidden xs:block">
                 <h1 className="text-sm sm:text-xl font-bold text-neutral-900 dark:text-neutral-100 truncate">
                   {t('header.libraryName')}
                 </h1>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -92,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 px-2 lg:px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap"
+                className="text-neutral-700 dark:text-neutral-300 hover:text-cultural-ethiopian-green-600 dark:hover:text-cultural-ethiopian-green-400 px-2 lg:px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap"
               >
                 {item.name}
               </Link>
@@ -109,7 +113,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200"
+                className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-cultural-ethiopian-green-500 focus:border-transparent transition-colors duration-200"
                 placeholder={t('header.searchPlaceholder')}
               />
             </form>
@@ -220,7 +224,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200"
+              className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-cultural-ethiopian-green-500 focus:border-transparent transition-colors duration-200"
               placeholder={t('header.searchPlaceholder')}
             />
           </form>
@@ -242,7 +246,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="block px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-md transition-colors duration-200 break-words"
+                  className="block px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-300 hover:text-cultural-ethiopian-green-600 dark:hover:text-cultural-ethiopian-green-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-md transition-colors duration-200 break-words"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}

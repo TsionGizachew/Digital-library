@@ -80,7 +80,7 @@ const Footer: React.FC = () => {
           {/* Library Info */}
           <motion.div variants={itemVariants} className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center mb-3 sm:mb-4">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-cultural-ethiopian-green-500 to-cultural-ethiopian-yellow-500 rounded-lg flex items-center justify-center shadow-md">
                 <BookOpenIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div className="ml-2 sm:ml-3">
@@ -96,19 +96,19 @@ const Footer: React.FC = () => {
             {/* Contact Info */}
             <div className="space-y-2 sm:space-y-3">
               <div className="flex items-start">
-                <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
                 <span className="text-xs sm:text-sm break-words">{t('footer.address')}</span>
               </div>
               <div className="flex items-start">
-                <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
                 <span className="text-xs sm:text-sm break-words">{t('footer.phone')}</span>
               </div>
               <div className="flex items-start">
-                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
                 <span className="text-xs sm:text-sm break-all">{t('footer.email')}</span>
               </div>
               <div className="flex items-start">
-                <ClockIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <ClockIcon className="w-4 h-4 sm:w-5 sm:h-5 text-cultural-ethiopian-green-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
                 <span className="text-xs sm:text-sm break-words">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
               </div>
             </div>
@@ -125,7 +125,7 @@ const Footer: React.FC = () => {
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-neutral-400 hover:text-primary-400 transition-colors duration-200 text-xs sm:text-sm block break-words"
+                      className="text-neutral-400 hover:text-cultural-ethiopian-green-400 transition-colors duration-200 text-xs sm:text-sm block break-words"
                     >
                       {link.name}
                     </Link>
@@ -151,13 +151,13 @@ const Footer: React.FC = () => {
             <div className="flex space-x-4 sm:space-x-6">
               <a
                 href="/privacy"
-                className="text-xs sm:text-sm text-neutral-400 hover:text-primary-400 transition-colors duration-200"
+                className="text-xs sm:text-sm text-neutral-400 hover:text-cultural-ethiopian-green-400 transition-colors duration-200"
               >
                 {t('footer.privacy')}
               </a>
               <a
                 href="/terms"
-                className="text-xs sm:text-sm text-neutral-400 hover:text-primary-400 transition-colors duration-200"
+                className="text-xs sm:text-sm text-neutral-400 hover:text-cultural-ethiopian-green-400 transition-colors duration-200"
               >
                 {t('footer.terms')}
               </a>
