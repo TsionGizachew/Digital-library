@@ -3,7 +3,7 @@ import { AdminService } from '../services/AdminService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { EventRepository } from '../repositories/EventRepository';
 import { AnnouncementRepository } from '../repositories/AnnouncementRepository';
-import { uploadToCloudinary } from '../utils/cloudinary';
+import { uploadImage } from '../utils/cloudinary';
 import { Settings } from '../entities/Settings';
 
 const adminService = new AdminService();
@@ -142,13 +142,13 @@ export class AdminController {
   });
 
   createEvent = asyncHandler(async (req: Request, res: Response) => {
-    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const image = req.file ? await uploadImage(req.file.path) : undefined;
     const event = await eventRepository.create({ ...req.body, image });
     res.status(201).json({ success: true, data: event });
   });
 
   updateEvent = asyncHandler(async (req: Request, res: Response) => {
-    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const image = req.file ? await uploadImage(req.file.path) : undefined;
     const event = await eventRepository.update(req.params.eventId, { ...req.body, image });
     res.status(200).json({ success: true, data: event });
   });
@@ -165,13 +165,13 @@ export class AdminController {
   });
 
   createAnnouncement = asyncHandler(async (req: Request, res: Response) => {
-    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const image = req.file ? await uploadImage(req.file.path) : undefined;
     const announcement = await announcementRepository.create({ ...req.body, image });
     res.status(201).json({ success: true, data: announcement });
   });
 
   updateAnnouncement = asyncHandler(async (req: Request, res: Response) => {
-    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const image = req.file ? await uploadImage(req.file.path) : undefined;
     const announcement = await announcementRepository.update(req.params.announcementId, { ...req.body, image });
     res.status(200).json({ success: true, data: announcement });
   });

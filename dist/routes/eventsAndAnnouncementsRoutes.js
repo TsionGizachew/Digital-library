@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const middleware_1 = require("../middleware");
+const EventRepository_1 = require("../repositories/EventRepository");
+const EventController_1 = require("../controllers/EventController");
+const AnnouncementController_1 = require("../controllers/AnnouncementController");
+const upload_1 = require("../middleware/upload");
+const types_1 = require("../types");
+const router = (0, express_1.Router)();
+const eventRepository = new EventRepository_1.EventRepository();
+router.get('/events', EventController_1.getAllEvents);
+router.get('/announcements', AnnouncementController_1.getAllAnnouncements);
+router.get('/announcements/:id', (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, AnnouncementController_1.getAnnouncementById);
+router.use(middleware_1.authenticate);
+router.post('/events', (0, middleware_1.authorize)(types_1.UserRole.ADMIN), upload_1.upload.single('image'), EventController_1.createEvent);
+router.post('/announcements', (0, middleware_1.authorize)(types_1.UserRole.ADMIN), upload_1.upload.single('image'), AnnouncementController_1.createAnnouncement);
+router.put('/announcements/:id', (0, middleware_1.authorize)(types_1.UserRole.ADMIN), (0, middleware_1.validateObjectId)('id'), upload_1.upload.single('image'), middleware_1.handleValidationErrors, AnnouncementController_1.updateAnnouncement);
+router.delete('/announcements/:id', (0, middleware_1.authorize)(types_1.UserRole.ADMIN), (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, AnnouncementController_1.deleteAnnouncement);
+exports.default = router;
+//# sourceMappingURL=eventsAndAnnouncementsRoutes.js.map

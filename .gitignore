@@ -75,7 +75,6 @@ jspm_packages/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -92,12 +91,6 @@ temp/
 # Logs
 logs
 *.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
 
 # IDE
 .vscode/
@@ -116,6 +109,7 @@ ehthumbs.db
 Thumbs.db
 
 # Build outputs
-# dist/ - Keep this for backend deployment (TypeScript compiled output)
-frontend/build/  # Frontend build is regenerated on deployment
-.env.production.example
+# NOTE: dist/ is NOT ignored - Railway needs it for deployment
+# If you want Railway to build from source, uncomment the line below:
+# dist/
+frontend/build/

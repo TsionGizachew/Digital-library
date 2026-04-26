@@ -1,0 +1,38 @@
+import { Request, Response } from 'express';
+export declare class AdminController {
+    getDashboard: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getStats: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getSystemActivity: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getSystemHealth: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getAuditLog: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getAllUsers: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    promoteUserToAdmin: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    demoteAdminToUser: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    blockUser: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    unblockUser: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getUserBorrowingHistory: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    bulkUpdateUsers: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    resetUserPassword: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getBorrowingRecords: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    approveBorrowingRequest: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    rejectBorrowingRequest: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    returnBook: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getAllBooks: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    createBook: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    updateBookStatus: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    bulkUpdateBooks: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    exportUsers: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    exportBooks: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getEvents: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    createEvent: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    updateEvent: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    deleteEvent: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getAnnouncements: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    createAnnouncement: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    updateAnnouncement: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    deleteAnnouncement: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    toggleAnnouncementStatus: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    getSettings: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    updateSettings: (req: Request, res: Response, next: import("express").NextFunction) => void;
+}
+//# sourceMappingURL=AdminController.d.ts.map

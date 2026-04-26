@@ -74,8 +74,8 @@ export class BookingController {
     ResponseUtil.paginated(
       res,
       result.records,
-      'Bookings retrieved successfully',
-      result.pagination
+      result.pagination,
+      'Bookings retrieved successfully'
     );
   });
 
@@ -91,8 +91,8 @@ export class BookingController {
     ResponseUtil.paginated(
       res,
       result.records,
-      'User bookings retrieved successfully',
-      result.pagination
+      result.pagination,
+      'User bookings retrieved successfully'
     );
   });
 
@@ -108,8 +108,8 @@ export class BookingController {
     ResponseUtil.paginated(
       res,
       result.records,
-      'User booking history retrieved successfully',
-      result.pagination
+      result.pagination,
+      'User booking history retrieved successfully'
     );
   });
 
@@ -119,8 +119,8 @@ export class BookingController {
     ResponseUtil.paginated(
       res,
       result.records,
-      'Pending bookings retrieved successfully',
-      result.pagination
+      result.pagination,
+      'Pending bookings retrieved successfully'
     );
   });
 
@@ -130,8 +130,8 @@ export class BookingController {
     ResponseUtil.paginated(
       res,
       result.records,
-      'Overdue bookings retrieved successfully',
-      result.pagination
+      result.pagination,
+      'Overdue bookings retrieved successfully'
     );
   });
 
@@ -211,8 +211,8 @@ export class BookingController {
     ResponseUtil.paginated(
       res,
       result.books,
-      'Popular books retrieved successfully',
-      result.pagination
+      result.pagination,
+      'Popular books retrieved successfully'
     );
   });
 

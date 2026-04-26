@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const DashboardController_1 = require("../controllers/DashboardController");
+const middleware_1 = require("../middleware");
+const router = (0, express_1.Router)();
+const dashboardController = new DashboardController_1.DashboardController();
+router.get('/home-stats', dashboardController.getHomePageStats);
+router.use(middleware_1.authenticate);
+router.get('/overview', dashboardController.getOverview);
+router.get('/charts', dashboardController.getChartsData);
+router.get('/borrowed-books', dashboardController.getBorrowedBooks);
+router.get('/reserved-books', dashboardController.getReservedBooks);
+router.get('/reading-history', dashboardController.getReadingHistory);
+router.get('/notifications', dashboardController.getNotifications);
+router.get('/favorite-books', dashboardController.getFavoriteBooks);
+router.post('/send-reminder/:bookId', dashboardController.sendReminder);
+router.post('/renew-book/:bookId', dashboardController.renewBook);
+router.post('/return-book/:bookId', dashboardController.returnBook);
+router.post('/cancel-reservation/:reservationId', dashboardController.cancelReservation);
+router.get('/generate-report', dashboardController.generateReport);
+exports.default = router;
+//# sourceMappingURL=dashboardRoutes.js.map
