@@ -12,7 +12,11 @@ const FeaturedEvents: React.FC = () => {
     const fetchEvents = async () => {
       try {
         const response = await eventService.getAllEvents();
-        setEvents(response.data.slice(0, 3));
+        // Filter to show only upcoming events
+        const upcomingEvents = response.data.filter(
+          (event: Event) => event.status === 'upcoming'
+        );
+        setEvents(upcomingEvents.slice(0, 3));
       } catch (error) {
         console.error('Error fetching events:', error);
       }

@@ -9,6 +9,7 @@ const BookService_1 = require("../services/BookService");
 const UserService_1 = require("../services/UserService");
 const BookingService_1 = require("../services/BookingService");
 const ReportService_1 = require("../services/ReportService");
+const NotificationRepository_1 = require("../repositories/NotificationRepository");
 const response_1 = require("../utils/response");
 const errorHandler_1 = require("../middleware/errorHandler");
 const types_1 = require("../types");
@@ -121,16 +122,44 @@ class DashboardController {
             response_1.ResponseUtil.success(res, result.records, 'Reading history retrieved successfully');
         });
         this.getNotifications = (0, errorHandler_1.catchAsync)(async (req, res, next) => {
-            const notifications = await this.bookingService.getBookingsDueSoon(3);
-            const formattedNotifications = notifications.map((b) => ({
-                id: b._id,
+            const userId = req.user?.id;
+            if (!userId) {
+                return next(new AppError_1.default('User not authenticated', 401));
+            }
+            const dueSoonBookings = await this.bookingService.getBookingsDueSoon(3);
+            const bookingNotifications = dueSoonBookings.map((b) => ({
+                id: `booking-${b._id}`,
                 type: 'due_soon',
                 title: 'Book Due Soon',
                 message: `Your copy of "${b.book.title}" is due soon.`,
                 date: b.dueDate,
                 read: false,
             }));
-            response_1.ResponseUtil.success(res, formattedNotifications, 'Notifications retrieved successfully');
+            const userNotifications = await this.notificationRepository.findByUserId(userId);
+            const eventAnnouncementNotifications = userNotifications.map((n) => ({
+                id: `notification-${n._id}`,
+                type: 'announcement',
+                title: 'Library Update',
+                message: n.message,
+                date: n.createdAt,
+                read: n.read || false,
+            }));
+            const allNotifications = [...bookingNotifications, ...eventAnnouncementNotifications]
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                .slice(0, 20);
+            response_1.ResponseUtil.success(res, allNotifications, 'Notifications retrieved successfully');
+        });
+        this.markNotificationAsRead = (0, errorHandler_1.catchAsync)(async (req, res, next) => {
+            const { notificationId } = req.params;
+            const userId = req.user?.id;
+            if (!userId) {
+                return next(new AppError_1.default('User not authenticated', 401));
+            }
+            const updatedNotification = await this.notificationRepository.markAsRead(notificationId);
+            if (!updatedNotification) {
+                return next(new AppError_1.default('Notification not found', 404));
+            }
+            response_1.ResponseUtil.success(res, updatedNotification, 'Notification marked as read');
         });
         this.getFavoriteBooks = (0, errorHandler_1.catchAsync)(async (req, res, next) => {
             const userId = req.user?.id;
@@ -209,6 +238,7 @@ class DashboardController {
         this.userService = new UserService_1.UserService();
         this.bookingService = new BookingService_1.BookingService();
         this.reportService = new ReportService_1.ReportService();
+        this.notificationRepository = new NotificationRepository_1.NotificationRepository();
     }
 }
 exports.DashboardController = DashboardController;

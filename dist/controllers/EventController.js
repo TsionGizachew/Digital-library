@@ -18,13 +18,16 @@ exports.createEvent = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const imageUrl = req.file
         ? req.file.path
         : 'https://res.cloudinary.com/dtkg4wfr2/image/upload/v1721898579/digital-library/events/default-event_axo12k.jpg';
+    const eventDate = new Date(date);
+    const currentDate = new Date();
+    const status = eventDate < currentDate ? 'past' : 'upcoming';
     const event = await eventRepository.create({
         title,
         description,
         date,
         location,
         organizer,
-        status: 'upcoming',
+        status,
         authorId,
         authorName,
         image: imageUrl,
@@ -44,13 +47,19 @@ exports.updateEvent = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { id } = req.params;
     const { title, description, date, location, organizer, status } = req.body;
     const imageUrl = req.file ? req.file.path : undefined;
+    let finalStatus = status;
+    if (date && status !== 'cancelled') {
+        const eventDate = new Date(date);
+        const currentDate = new Date();
+        finalStatus = eventDate < currentDate ? 'past' : 'upcoming';
+    }
     const updatedEvent = await eventRepository.update(id, {
         title,
         description,
         date,
         location,
         organizer,
-        status,
+        status: finalStatus,
         image: imageUrl,
     });
     if (!updatedEvent) {

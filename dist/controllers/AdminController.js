@@ -172,6 +172,12 @@ class AdminController {
             }
             res.status(200).json({ success: true, data: settings, message: 'Settings updated successfully' });
         });
+        this.createRecommendation = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+            const { title, description, priority } = req.body;
+            const userId = req.user.id;
+            const result = await adminService.createRecommendation({ title, description, priority }, userId);
+            res.status(201).json({ success: true, data: result.data, message: result.message });
+        });
     }
 }
 exports.AdminController = AdminController;

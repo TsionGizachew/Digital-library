@@ -32,15 +32,13 @@ const Logo: React.FC<AdvancedLogoComponentProps> = ({
     auto: 'h-auto w-auto',
   };
 
-  // Logo paths - using existing logo from photo folder
-  const logoPath = '/photo/Logo.jpg';
-  const logoWithoutTitlePath = '/photo/logo with out title .jpg';
-
-  // Select appropriate logo based on variant
+  // Logo paths - using images from public folder
+  // Try WebP first (better compression), fallback to AVIF, then fallback SVG
+  const logoPath = '/images/logos/Logo1.webp';
+  const logoPathAlt = '/images/logos/Logo1.avif';
+  
+  // For icon variant, use the same logo (you can add a separate icon version later)
   const getLogoPath = () => {
-    if (variant === 'icon' || !showText) {
-      return logoWithoutTitlePath;
-    }
     return logoPath;
   };
 

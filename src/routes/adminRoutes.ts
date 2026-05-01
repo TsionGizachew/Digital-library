@@ -964,8 +964,16 @@ router.put(
   adminController.toggleAnnouncementStatus
 );
 
-// Settings Routes
-router.get('/settings', adminController.getSettings);
-router.put('/settings', adminController.updateSettings);
+  // Settings Routes
+  router.get('/settings', adminController.getSettings);
+  router.put('/settings', adminController.updateSettings);
+
+  // Recommendations Route
+  router.post('/recommendations', [
+    body('title').notEmpty().withMessage('Title is required'),
+    body('description').notEmpty().withMessage('Description is required'),
+    body('priority').isIn(['low', 'medium', 'high', 'urgent']).withMessage('Invalid priority'),
+    handleValidationErrors,
+  ], adminController.createRecommendation);
 
 export default router;

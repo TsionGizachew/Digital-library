@@ -18,10 +18,10 @@ export interface Announcement {
 
 export const UserEventAndAnnouncementService = {
   getAllEvents: async (): Promise<ApiResponse<Event[]>> => {
-    return apiService.get('/events');
+    return apiService.get('/events-announcements/events');
   },
 
   getAllAnnouncements: async (): Promise<ApiResponse<Announcement[]>> => {
-    return apiService.get('/announcements');
+    return apiService.get('/events-announcements/announcements');
   },
 };

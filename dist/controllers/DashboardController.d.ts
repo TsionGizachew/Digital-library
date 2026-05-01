@@ -5,12 +5,14 @@ export declare class DashboardController {
     private userService;
     private bookingService;
     private reportService;
+    private notificationRepository;
     constructor();
     getOverview: (req: Request, res: Response, next: NextFunction) => void;
     getBorrowedBooks: (req: Request, res: Response, next: NextFunction) => void;
     getReservedBooks: (req: Request, res: Response, next: NextFunction) => void;
     getReadingHistory: (req: Request, res: Response, next: NextFunction) => void;
     getNotifications: (req: Request, res: Response, next: NextFunction) => void;
+    markNotificationAsRead: (req: Request, res: Response, next: NextFunction) => void;
     getFavoriteBooks: (req: Request, res: Response, next: NextFunction) => void;
     sendReminder: (req: Request, res: Response, next: NextFunction) => void;
     renewBook: (req: Request, res: Response, next: NextFunction) => void;

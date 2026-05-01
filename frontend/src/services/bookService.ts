@@ -152,7 +152,7 @@ export const bookService = {
   },
 
   async createBook(bookData: Omit<Book, 'id' | 'createdAt' | 'updatedAt'>): Promise<ApiResponse<Book>> {
-    return apiService.post<Book>('/books', bookData);
+    return apiService.post<Book>('/admin/books', bookData);
   },
 
   async updateBook(id: string, bookData: Partial<Book>): Promise<ApiResponse<Book>> {

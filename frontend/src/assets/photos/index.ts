@@ -7,23 +7,23 @@ export const libraryHeadPhotos = {
     optimized: {
       webp: {
         '1x': '/assets/photos/ato-yohannes-primary-1x.webp',
-        '2x': '/assets/photos/ato-yohannes-primary-2x.webp',
-        '3x': '/assets/photos/ato-yohannes-primary-3x.webp',
+        '2x': '/assets/photos/ato-yohannes-primary-1x.webp',
+        '3x': '/assets/photos/ato-yohannes-primary-1x.webp',
       },
       avif: {
         '1x': '/assets/photos/ato-yohannes-primary-1x.avif',
         '2x': '/assets/photos/ato-yohannes-primary-2x.avif',
-        '3x': '/assets/photos/ato-yohannes-primary-3x.avif',
+        '3x': '/assets/photos/ato-yohannes-primary-1x.avif',
       },
       jpeg: {
         '1x': '/assets/photos/ato-yohannes-primary-1x.jpg',
         '2x': '/assets/photos/ato-yohannes-primary-2x.jpg',
-        '3x': '/assets/photos/ato-yohannes-primary-3x.jpg',
+        '3x': '/assets/photos/ato-yohannes-primary-1x.jpg',
       },
     },
     placeholder: {
-      blurred: '/assets/photos/ato-yohannes-primary-blur.jpg',
-      lowQuality: '/assets/photos/ato-yohannes-primary-lq.jpg',
+      blurred: '/assets/photos/ato-yohannes-primary-1x.webp',
+      lowQuality: '/assets/photos/ato-yohannes-primary-1x.webp',
       svg: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMTUwQzIwMCAxNzIuMDkxIDE4Mi4wOTEgMTkwIDE2MCAxOTBDMTM3LjkwOSAxOTAgMTIwIDE3Mi4wOTEgMTIwIDE1MEMxMjAgMTI3LjkwOSAxMzcuOTA5IDExMCAxNjAgMTEwQzE4Mi4wOTEgMTEwIDIwMCAxMjcuOTA5IDIwMCAxNTBaIiBmaWxsPSIjOUI5QkEzIi8+CjxwYXRoIGQ9Ik0yODAgMjQwSDQwVjIyMEM0MCAyMDguOTU0IDQ4Ljk1NDMgMjAwIDYwIDIwMEgyNjBDMjcxLjA0NiAyMDAgMjgwIDIwOC45NTQgMjgwIDIyMFYyNDBaIiBmaWxsPSIjOUI5QkEzIi8+Cjwvc3ZnPgo=',
     },
     alt: {

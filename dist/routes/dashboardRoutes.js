@@ -13,6 +13,7 @@ router.get('/borrowed-books', dashboardController.getBorrowedBooks);
 router.get('/reserved-books', dashboardController.getReservedBooks);
 router.get('/reading-history', dashboardController.getReadingHistory);
 router.get('/notifications', dashboardController.getNotifications);
+router.post('/mark-notification-read/:notificationId', dashboardController.markNotificationAsRead);
 router.get('/favorite-books', dashboardController.getFavoriteBooks);
 router.post('/send-reminder/:bookId', dashboardController.sendReminder);
 router.post('/renew-book/:bookId', dashboardController.renewBook);

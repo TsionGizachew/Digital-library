@@ -34,5 +34,6 @@ export declare class AdminController {
     toggleAnnouncementStatus: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getSettings: (req: Request, res: Response, next: import("express").NextFunction) => void;
     updateSettings: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    createRecommendation: (req: Request, res: Response, next: import("express").NextFunction) => void;
 }
 //# sourceMappingURL=AdminController.d.ts.map

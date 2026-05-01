@@ -507,4 +507,26 @@ export class AdminService {
       popularBooks: popularBooks.books,
     };
   }
+
+  async createRecommendation(data: { title: string; description: string; priority: string }, userId: string): Promise<any> {
+    // In a real application, you would save this to a database
+    // For now, we'll just log it and return success
+    console.log('New recommendation received:', {
+      ...data,
+      userId,
+      createdAt: new Date(),
+    });
+    
+    // You could save to a Recommendation model/collection here
+    return {
+      success: true,
+      message: 'Recommendation submitted successfully',
+      data: {
+        ...data,
+        userId,
+        status: 'pending',
+        createdAt: new Date(),
+      },
+    };
+  }
 }

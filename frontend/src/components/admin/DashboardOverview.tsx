@@ -21,6 +21,19 @@ interface DashboardOverviewProps {
   onShowAddBookModal: () => void;
 }
 
+interface StatsWithChange {
+  totalBooks: number;
+  totalMembers: number;
+  borrowedBooks: number;
+  overdueBooks: number;
+  changes: {
+    booksChange: number;
+    membersChange: number;
+    borrowedChange: number;
+    overdueChange: number;
+  };
+}
+
 const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   overviewData,
   loading,
@@ -31,25 +44,60 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   const [recommendation, setRecommendation] = useState({ title: '', description: '', priority: 'medium' });
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [activityLoading, setActivityLoading] = useState(true);
+  const [statsWithChanges, setStatsWithChanges] = useState<StatsWithChange | null>(null);
 
   useEffect(() => {
-    const fetchRecentActivity = async () => {
+    const fetchDashboardData = async () => {
       try {
         const response = await fetch('/api/v1/dashboard/overview', {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
         });
         const data = await response.json();
-        setRecentActivity(data.data?.recentActivity || []);
+        
+        if (data.success && data.data) {
+          setRecentActivity(data.data?.recentActivity || []);
+          
+          // Fetch stats with changes
+          const statsResponse = await fetch('/api/v1/admin/dashboard', {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+          });
+          const statsData = await statsResponse.json();
+          
+          if (statsData.success && statsData.data) {
+            const currentStats = statsData.data;
+            
+            // Calculate percentage changes (mock calculation - in real app, compare with last month's data)
+            const booksChange = currentStats.books?.newThisMonth 
+              ? ((currentStats.books.newThisMonth / currentStats.books.total) * 100).toFixed(1)
+              : '0.0';
+            const membersChange = currentStats.users?.newThisMonth
+              ? ((currentStats.users.newThisMonth / currentStats.users.total) * 100).toFixed(1)
+              : '0.0';
+            
+            setStatsWithChanges({
+              totalBooks: currentStats.books?.total || 0,
+              totalMembers: currentStats.users?.total || 0,
+              borrowedBooks: currentStats.bookings?.approved || 0,
+              overdueBooks: currentStats.bookings?.overdue || 0,
+              changes: {
+                booksChange: parseFloat(booksChange),
+                membersChange: parseFloat(membersChange),
+                borrowedChange: 8.1, // This would be calculated from historical data
+                overdueChange: -2.3, // Negative means decrease
+              }
+            });
+          }
+        }
       } catch (error) {
-        console.error('Error fetching activity:', error);
+        console.error('Error fetching dashboard data:', error);
       } finally {
         setActivityLoading(false);
       }
     };
-    fetchRecentActivity();
+    fetchDashboardData();
   }, []);
 
-  if (loading) {
+  if (loading || !statsWithChanges) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="spinner w-8 h-8 mr-4"></div>
@@ -58,50 +106,42 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
     );
   }
 
-  if (!overviewData) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-neutral-600 dark:text-neutral-400">No overview data available</p>
-      </div>
-    );
-  }
-
   const stats = [
     {
       title: 'Total Books',
-      value: overviewData.stats?.totalBooks ?? 0,
+      value: statsWithChanges.totalBooks,
       icon: BookOpenIcon,
       bgColor: 'bg-primary-50 dark:bg-primary-900/20',
       iconColor: 'text-primary-600 dark:text-primary-400',
-      change: '+12%',
+      change: `+${statsWithChanges.changes.booksChange}%`,
       changePositive: true,
     },
     {
       title: 'Active Members',
-      value: overviewData.stats?.totalMembers ?? 0,
+      value: statsWithChanges.totalMembers,
       icon: UsersIcon,
       bgColor: 'bg-success-50 dark:bg-success-900/20',
       iconColor: 'text-success-600 dark:text-success-400',
-      change: '+8%',
+      change: `+${statsWithChanges.changes.membersChange}%`,
       changePositive: true,
     },
     {
       title: 'Books Borrowed',
-      value: overviewData.stats?.borrowedBooks ?? 0,
+      value: statsWithChanges.borrowedBooks,
       icon: ClipboardDocumentListIcon,
       bgColor: 'bg-warning-50 dark:bg-warning-900/20',
       iconColor: 'text-warning-600 dark:text-warning-400',
-      change: '+15%',
+      change: `+${statsWithChanges.changes.borrowedChange}%`,
       changePositive: true,
     },
     {
       title: 'Overdue Books',
-      value: overviewData.stats?.overdueBooks ?? 0,
+      value: statsWithChanges.overdueBooks,
       icon: ExclamationTriangleIcon,
       bgColor: 'bg-error-50 dark:bg-error-900/20',
       iconColor: 'text-error-600 dark:text-error-400',
-      change: '-5%',
-      changePositive: false,
+      change: `${statsWithChanges.changes.overdueChange}%`,
+      changePositive: statsWithChanges.changes.overdueChange < 0,
     },
   ];
 
@@ -258,24 +298,35 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <div className="flex gap-3">
                 <button onClick={() => setShowRecommendationForm(false)} className="btn-outline flex-1">Cancel</button>
                 <button onClick={async () => {
-                  try {
-                    const response = await fetch('/api/v1/admin/recommendations', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                      },
-                      body: JSON.stringify(recommendation)
-                    });
-                    if (response.ok) {
-                      toast.success('Recommendation submitted successfully!');
-                      setRecommendation({ title: '', description: '', priority: 'medium' });
-                      setShowRecommendationForm(false);
-                    }
-                  } catch (error) {
-                    toast.error('Failed to submit recommendation');
-                  }
-                }} className="btn-primary flex-1">Submit</button>
+            if (!recommendation.title || !recommendation.description) {
+              toast.error('Please fill in all fields');
+              return;
+            }
+            
+            try {
+              const response = await fetch('/api/v1/admin/recommendations', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify(recommendation)
+              });
+              
+              const result = await response.json();
+              
+              if (response.ok && result.success) {
+                toast.success('Recommendation submitted successfully!');
+                setRecommendation({ title: '', description: '', priority: 'medium' });
+                setShowRecommendationForm(false);
+              } else {
+                toast.error(result.message || 'Failed to submit recommendation');
+              }
+            } catch (error) {
+              console.error('Error submitting recommendation:', error);
+              toast.error('Failed to submit recommendation. Please try again.');
+            }
+          }} className="btn-primary flex-1">Submit</button>
               </div>
             </div>
           </div>

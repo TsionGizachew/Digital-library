@@ -3,6 +3,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { TabType, NotificationSettings } from '../../types/dashboard';
 import { useDashboardData } from '../../hooks/useDashboardData';
 import { useDashboardActions } from '../../hooks/useDashboardActions';
+import { bookService } from '../../services/bookService';
+import toast from 'react-hot-toast';
 
 // Components
 import DashboardNavigation from '../../components/admin/DashboardNavigation';
@@ -55,39 +57,19 @@ const AdminDashboard: React.FC = () => {
   // Handle book submission
   const handleAddBookSubmit = async (bookData: any) => {
     try {
-      console.log('📚 Original book data:', bookData);
-
-      const token = localStorage.getItem('accessToken');
-      console.log('📚 Auth token exists:', !!token);
-      console.log('📚 Auth token value:', token ? token.substring(0, 20) + '...' : 'null');
-      console.log('📚 User info:', user);
-      console.log('📚 User role:', user?.role);
-
-      if (!token) {
-        alert('You are not logged in. Please log in first.\n\nFor testing, I will create a test admin token.');
-        // For testing purposes, create a mock token
-        const testToken = 'test-admin-token-' + Date.now();
-        localStorage.setItem('accessToken', testToken);
-        console.log('📚 Created test token:', testToken);
-      }
-
-      if (!user) {
-        console.log('📚 No user found, proceeding with test mode');
-      }
+      console.log('📚 Submitting book data:', bookData);
 
       // Transform data to match backend expectations
       const transformedData = {
         title: bookData.title?.trim(),
         author: bookData.author?.trim(),
-        description: bookData.description && bookData.description.trim().length >= 10
-          ? bookData.description.trim()
-          : 'No description provided', // Required, min 10 chars
+        description: bookData.description?.trim() || 'No description provided',
         category: bookData.category,
-        code: bookData.code?.trim() || `BK-${Date.now()}`, // Add unique code field
-        isbn: bookData.isbn && bookData.isbn.trim() ? bookData.isbn.trim() : undefined,
-        publisher: bookData.publisher || undefined,
-        publishedDate: bookData.publicationDate ? new Date(bookData.publicationDate) : undefined,
-        pageCount: bookData.pages ? parseInt(bookData.pages.toString()) : undefined,
+        code: bookData.code?.trim() || `BK-${Date.now()}`,
+        isbn: bookData.isbn?.trim() || undefined,
+        publisher: undefined,
+        publishedDate: undefined,
+        pageCount: undefined,
         language: bookData.language || 'English',
         tags: [],
         coverImage: undefined,
@@ -97,65 +79,35 @@ const AdminDashboard: React.FC = () => {
         },
         location: {
           shelf: bookData.shelfNumber?.trim() || 'A-1',
-          section: bookData.section?.trim() || 'General', // Use section from form
+          section: bookData.section?.trim() || 'General',
           floor: 'Ground Floor',
         },
       };
 
       console.log('📚 Transformed book data:', transformedData);
 
-      // Validate required fields before sending
-      if (!transformedData.title || !transformedData.author || !transformedData.category) {
-        alert('Title, Author, and Category are required fields');
-        return;
-      }
+      // Use bookService which handles authentication automatically
+      const response = await bookService.createBook(transformedData as any);
+      
+      console.log('📚 Book creation response:', response);
 
-      if (!transformedData.location.shelf || !transformedData.location.section) {
-        alert('Shelf location and Section are required fields');
-        return;
-      }
-
-      if (transformedData.availability.totalCopies < 1) {
-        alert('Total copies must be at least 1');
-        return;
-      }
-
-      const response = await fetch('/api/v1/admin/books', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(transformedData),
-      });
-
-      console.log('📚 Response status:', response.status);
-      const result = await response.json();
-      console.log('📚 Add book response:', result);
-
-      if (response.ok && result.success) {
-        alert('Book added successfully!');
+      if (response.success) {
+        toast.success('Book added successfully!');
         handleCloseAddBookModal();
       } else {
-        console.error('📚 Backend error:', result);
-        if (response.status === 401) {
-          alert('Authentication failed. Please log in again.');
-        } else if (response.status === 400) {
-          // Show detailed validation errors
-          let errorMessage = 'Validation error:\n';
-          if (result.errors && Array.isArray(result.errors)) {
-            errorMessage += result.errors.map((err: any) => `• ${err.msg || err.message}`).join('\n');
-          } else {
-            errorMessage += result.message || 'Please check all required fields';
-          }
-          alert(errorMessage);
-        } else {
-          alert(`Failed to add book: ${result.message || 'Unknown error'}`);
-        }
+        toast.error(response.message || 'Failed to add book');
       }
-    } catch (error) {
-      console.error('📚 Network error:', error);
-      alert('Failed to add book. Please check your connection and try again.');
+    } catch (error: any) {
+      console.error('📚 Error adding book:', error);
+      
+      if (error.response?.status === 401) {
+        toast.error('Authentication failed. Please log in again.');
+      } else if (error.response?.status === 400) {
+        const errorMessage = error.response?.data?.message || 'Validation error. Please check all required fields.';
+        toast.error(errorMessage);
+      } else {
+        toast.error('Failed to add book. Please try again.');
+      }
     }
   };
 

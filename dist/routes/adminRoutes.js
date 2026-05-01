@@ -93,5 +93,11 @@ router.delete('/announcements/:announcementId', (0, middleware_1.validateObjectI
 router.put('/announcements/:announcementId/status', (0, middleware_1.validateObjectId)('announcementId'), middleware_1.handleValidationErrors, adminController.toggleAnnouncementStatus);
 router.get('/settings', adminController.getSettings);
 router.put('/settings', adminController.updateSettings);
+router.post('/recommendations', [
+    (0, express_validator_1.body)('title').notEmpty().withMessage('Title is required'),
+    (0, express_validator_1.body)('description').notEmpty().withMessage('Description is required'),
+    (0, express_validator_1.body)('priority').isIn(['low', 'medium', 'high', 'urgent']).withMessage('Invalid priority'),
+    middleware_1.handleValidationErrors,
+], adminController.createRecommendation);
 exports.default = router;
 //# sourceMappingURL=adminRoutes.js.map

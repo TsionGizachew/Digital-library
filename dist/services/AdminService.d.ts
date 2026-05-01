@@ -99,5 +99,10 @@ export declare class AdminService {
     updateEvent(eventId: string, eventData: any): Promise<any>;
     deleteEvent(eventId: string): Promise<void>;
     generateReport(): Promise<any>;
+    createRecommendation(data: {
+        title: string;
+        description: string;
+        priority: string;
+    }, userId: string): Promise<any>;
 }
 //# sourceMappingURL=AdminService.d.ts.map

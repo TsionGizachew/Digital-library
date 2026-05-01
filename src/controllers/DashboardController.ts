@@ -4,6 +4,7 @@ import { BookService } from '../services/BookService';
 import { UserService } from '../services/UserService';
 import { BookingService } from '../services/BookingService';
 import { ReportService } from '../services/ReportService';
+import { NotificationRepository } from '../repositories/NotificationRepository';
 import { ResponseUtil } from '../utils/response';
 import { catchAsync } from '../middleware/errorHandler';
 import { UserRole, BookingStatus } from '../types';
@@ -15,6 +16,7 @@ export class DashboardController {
   private userService: UserService;
   private bookingService: BookingService;
   private reportService: ReportService;
+  private notificationRepository: NotificationRepository;
 
   constructor() {
     this.adminService = new AdminService();
@@ -22,6 +24,7 @@ export class DashboardController {
     this.userService = new UserService();
     this.bookingService = new BookingService();
     this.reportService = new ReportService();
+    this.notificationRepository = new NotificationRepository();
   }
 
   // GET /api/v1/dashboard/overview
@@ -144,16 +147,58 @@ export class DashboardController {
 
   // GET /api/v1/dashboard/notifications
   getNotifications = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const notifications = await this.bookingService.getBookingsDueSoon(3);
-    const formattedNotifications = notifications.map((b: any) => ({
-      id: b._id,
+    const userId = req.user?.id;
+    if (!userId) {
+      return next(new AppError('User not authenticated', 401));
+    }
+
+    // Get booking-related notifications
+    const dueSoonBookings = await this.bookingService.getBookingsDueSoon(3);
+    const bookingNotifications = dueSoonBookings.map((b: any) => ({
+      id: `booking-${b._id}`,
       type: 'due_soon',
       title: 'Book Due Soon',
       message: `Your copy of "${b.book.title}" is due soon.`,
       date: b.dueDate,
       read: false,
     }));
-    ResponseUtil.success(res, formattedNotifications, 'Notifications retrieved successfully');
+
+    // Get event and announcement notifications
+    const userNotifications = await this.notificationRepository.findByUserId(userId);
+    
+    const eventAnnouncementNotifications = userNotifications.map((n: any) => ({
+      id: `notification-${n._id}`,
+      type: 'announcement',
+      title: 'Library Update',
+      message: n.message,
+      date: n.createdAt,
+      read: n.read || false,
+    }));
+
+    // Combine all notifications and sort by date
+    const allNotifications = [...bookingNotifications, ...eventAnnouncementNotifications]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 20); // Limit to 20 most recent
+
+    ResponseUtil.success(res, allNotifications, 'Notifications retrieved successfully');
+  });
+
+  // POST /api/v1/dashboard/mark-notification-read/:notificationId
+  markNotificationAsRead = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { notificationId } = req.params;
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      return next(new AppError('User not authenticated', 401));
+    }
+
+    const updatedNotification = await this.notificationRepository.markAsRead(notificationId);
+    
+    if (!updatedNotification) {
+      return next(new AppError('Notification not found', 404));
+    }
+
+    ResponseUtil.success(res, updatedNotification, 'Notification marked as read');
   });
 
   // GET /api/v1/dashboard/favorite-books

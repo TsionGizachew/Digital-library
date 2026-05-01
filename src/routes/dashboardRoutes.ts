@@ -120,6 +120,30 @@ router.get('/notifications', dashboardController.getNotifications);
 
 /**
  * @swagger
+ * /api/v1/dashboard/mark-notification-read/{notificationId}:
+ *   post:
+ *     summary: Mark notification as read
+ *     tags: [Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: notificationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Notification marked as read
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Notification not found
+ */
+router.post('/mark-notification-read/:notificationId', dashboardController.markNotificationAsRead);
+
+/**
+ * @swagger
  * /api/v1/dashboard/favorite-books:
  *   get:
  *     summary: Get user's favorite books

@@ -93,7 +93,7 @@ const LibraryHeadSection: React.FC<LibraryHeadSectionProps> = ({
               <div className="relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-cultural-ethiopian-green-400 to-cultural-ethiopian-yellow-400 rounded-2xl opacity-20 blur-2xl" />
                 <ResponsivePhoto
-                  src="/photo/photo_2026-04-24_15-57-45.jpg"
+                  src="/images/photos/ato-yohannes-primary-1x.jpg"
                   alt={profile.personal.name}
                   sizes={photoSizes}
                   aspectRatio="3/4"
@@ -191,7 +191,7 @@ const LibraryHeadSection: React.FC<LibraryHeadSectionProps> = ({
               <div className="relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-cultural-ethiopian-green-400 to-cultural-ethiopian-yellow-400 rounded-2xl opacity-20 blur-2xl" />
                 <ResponsivePhoto
-                  src="/photo/photo_2026-04-24_15-57-45.jpg"
+                  src="/images/photos/ato-yohannes-primary-1x.jpg"
                   alt={profile.personal.name}
                   sizes={photoSizes}
                   aspectRatio="3/4"

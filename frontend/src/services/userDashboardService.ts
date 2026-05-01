@@ -114,7 +114,7 @@ export const userDashboardService = {
   },
 
   async markNotificationAsRead(notificationId: string): Promise<ActionResponse> {
-    const response = await apiRequest<ActionResponse>(`/user/notifications/${notificationId}/read`, {
+    const response = await apiRequest<ActionResponse>(`/dashboard/mark-notification-read/${notificationId}`, {
         method: 'POST',
     });
     return response;

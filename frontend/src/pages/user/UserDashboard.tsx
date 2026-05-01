@@ -81,8 +81,8 @@ const UserDashboard: React.FC = () => {
       }
     };
     loadUserData();
-    const intervalId = setInterval(loadUserData, 180000000); // Poll every 30 minute
-    return () => clearInterval(intervalId);
+    // Removed automatic polling to reduce API calls
+    // Data will refresh when user navigates between tabs or manually refreshes
   }, []);
 
   const containerVariants = {
@@ -147,14 +147,31 @@ const UserDashboard: React.FC = () => {
 
   const toggleFavorite = async (bookId: string) => {
     try {
-      await userDashboardService.toggleFavorite(bookId);
+      console.log('[UserDashboard] Toggling favorite for book:', bookId);
       
-      // Refetch favorite books to ensure the UI is in sync with the database
+      // Optimistically update UI
+      const isFavorite = favoriteBooks.some(book => book.id === bookId);
+      
+      if (isFavorite) {
+        // Remove from favorites
+        setFavoriteBooks(prev => prev.filter(book => book.id !== bookId));
+      } else {
+        // We'll refetch to get the complete book data
+      }
+      
+      // Call API
+      const response = await userDashboardService.toggleFavorite(bookId);
+      console.log('[UserDashboard] Toggle favorite response:', response);
+      
+      // Refetch favorite books to ensure consistency
       const { data: favoriteBooksDetails } = await userDashboardService.getFavoriteBooks();
+      console.log('[UserDashboard] Refetched favorites:', favoriteBooksDetails);
       setFavoriteBooks(favoriteBooksDetails || []);
     } catch (err) {
-      console.error('Failed to toggle favorite status', err);
-      // Optionally, show an error message to the user
+      console.error('[UserDashboard] Failed to toggle favorite status', err);
+      // Revert optimistic update by refetching
+      const { data: favoriteBooksDetails } = await userDashboardService.getFavoriteBooks();
+      setFavoriteBooks(favoriteBooksDetails || []);
     }
   };
 
@@ -208,59 +225,127 @@ const UserDashboard: React.FC = () => {
     }
   };
 
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const markNotificationAsRead = async (notificationId: string) => {
+    try {
+      await userDashboardService.markNotificationAsRead(notificationId);
+      setNotifications(prev => 
+        prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+      );
+    } catch (err) {
+      console.error('Failed to mark notification as read', err);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-neutral-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-neutral-950 dark:via-slate-900 dark:to-neutral-900">
+      {/* Modern Header with Glass Morphism */}
+      <div className="sticky top-0 z-50 bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl border-b border-neutral-200/50 dark:border-neutral-700/50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 sm:h-20">
             {/* Logo and User Info */}
-            <div className="flex items-center min-w-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <BookOpenIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+                  <BookOpenIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-white dark:border-neutral-900"></div>
               </div>
-              <div className="ml-2 sm:ml-3 min-w-0">
-                <h1 className="text-sm sm:text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate">
+              <div className="hidden sm:block">
+                <h1 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
                   {t('header.libraryName')}
                 </h1>
-                <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 truncate hidden sm:block">
-                  Welcome, {user?.name}
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  Welcome back, <span className="font-medium text-primary-600 dark:text-primary-400">{user?.name}</span>
                 </p>
               </div>
             </div>
 
-            {/* Notifications and Actions */}
-            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
-              {/* Notifications */}
+            {/* Actions */}
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              {/* Notifications Dropdown */}
               <div className="relative">
-                <button className="p-1.5 sm:p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200">
-                  <BellIcon className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-600 dark:text-neutral-400" />
+                <button 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative p-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 group"
+                >
+                  <BellIcon className="w-6 h-6 text-neutral-600 dark:text-neutral-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
                   {notifications.filter(n => !n.read).length > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-4 h-4 sm:w-5 sm:h-5 bg-primary-500 text-white text-[10px] sm:text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute top-1 right-1 w-5 h-5 bg-gradient-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse shadow-lg">
                       {notifications.filter(n => !n.read).length}
                     </span>
                   )}
                 </button>
+                
+                {/* Notifications Dropdown Panel */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden z-50">
+                    <div className="p-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white">
+                      <h3 className="font-bold text-lg">Notifications</h3>
+                      <p className="text-sm text-primary-100">{notifications.filter(n => !n.read).length} unread</p>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <BellIcon className="w-12 h-12 mx-auto text-neutral-300 dark:text-neutral-600 mb-3" />
+                          <p className="text-neutral-500 dark:text-neutral-400">No notifications yet</p>
+                        </div>
+                      ) : (
+                        notifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            onClick={() => markNotificationAsRead(notification.id)}
+                            className={`p-4 border-b border-neutral-100 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 cursor-pointer transition-colors ${
+                              !notification.read ? 'bg-primary-50/50 dark:bg-primary-900/10' : ''
+                            }`}
+                          >
+                            <div className="flex items-start space-x-3">
+                              <div className="flex-shrink-0 mt-1">
+                                {getNotificationIcon(notification.type)}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                                  {notification.title}
+                                </p>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                                  {notification.message}
+                                </p>
+                                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-2">
+                                  {formatDate(notification.date)}
+                                </p>
+                              </div>
+                              {!notification.read && (
+                                <div className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0 mt-2"></div>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
               
               <ThemeToggle />
               <LanguageToggle />
               <Link
                 to="/events-announcements"
-                className="btn-outline text-xs sm:text-sm hidden md:inline-flex"
+                className="hidden md:flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-lg shadow-primary-500/30"
               >
-                Events & Announcements
+                <CalendarDaysIcon className="w-5 h-5" />
+                <span>Events</span>
               </Link>
               <Link
                 to="/"
-                className="btn-outline text-xs sm:text-sm px-2 sm:px-4"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2.5 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 hover:border-primary-500 dark:hover:border-primary-500 text-neutral-700 dark:text-neutral-300 font-medium transition-all duration-200"
               >
-                <ArrowLeftIcon className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Back to Home</span>
+                <ArrowLeftIcon className="w-4 h-4" />
+                <span className="hidden sm:inline">Home</span>
               </Link>
               <button
                 onClick={logout}
-                className="btn-primary text-xs sm:text-sm px-2 sm:px-4"
+                className="px-3 sm:px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg shadow-red-500/30"
               >
                 Logout
               </button>
@@ -270,47 +355,76 @@ const UserDashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          {/* Welcome Section */}
-          <motion.div variants={itemVariants} className="mb-6 sm:mb-8">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-1 sm:mb-2">
-              Welcome back, {user?.name}!
-            </h1>
-            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400">
-              Manage your library account, track your books, and discover new reads.
-            </p>
+          {/* Modern Welcome Section with Stats Preview */}
+          <motion.div variants={itemVariants} className="mb-8 sm:mb-10">
+            <div className="bg-white/60 dark:bg-neutral-800/60 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl border border-neutral-200/50 dark:border-neutral-700/50">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent mb-2">
+                    Welcome back, {user?.name}! 👋
+                  </h1>
+                  <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-400">
+                    Manage your library account, track your books, and discover new reads.
+                  </p>
+                </div>
+              </div>
+              
+              {/* Quick Stats Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 text-white shadow-lg">
+                  <BookOpenIcon className="w-8 h-8 mb-2 opacity-80" />
+                  <p className="text-2xl font-bold">{borrowedBooks.length}</p>
+                  <p className="text-sm opacity-90">Borrowed</p>
+                </div>
+                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 text-white shadow-lg">
+                  <ClockIcon className="w-8 h-8 mb-2 opacity-80" />
+                  <p className="text-2xl font-bold">{reservedBooks.length}</p>
+                  <p className="text-sm opacity-90">Reserved</p>
+                </div>
+                <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl p-4 text-white shadow-lg">
+                  <HeartIcon className="w-8 h-8 mb-2 opacity-80" />
+                  <p className="text-2xl font-bold">{favoriteBooks.length}</p>
+                  <p className="text-sm opacity-90">Favorites</p>
+                </div>
+                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-4 text-white shadow-lg">
+                  <CheckCircleIcon className="w-8 h-8 mb-2 opacity-80" />
+                  <p className="text-2xl font-bold">{readingHistory.length}</p>
+                  <p className="text-sm opacity-90">Completed</p>
+                </div>
+              </div>
+            </div>
           </motion.div>
 
-          {/* Navigation Tabs */}
-          <motion.div variants={itemVariants} className="mb-6 sm:mb-8">
-            <div className="border-b border-neutral-200 dark:border-neutral-700">
-              <nav className="-mb-px flex space-x-4 sm:space-x-6 md:space-x-8 overflow-x-auto scrollbar-hide">
+          {/* Modern Navigation Tabs */}
+          <motion.div variants={itemVariants} className="mb-8">
+            <div className="bg-white/60 dark:bg-neutral-800/60 backdrop-blur-xl rounded-2xl p-2 shadow-lg border border-neutral-200/50 dark:border-neutral-700/50">
+              <nav className="flex space-x-2 overflow-x-auto scrollbar-hide">
                 {[
                   { id: 'overview', label: 'Overview', icon: BookOpenIcon },
-                  { id: 'borrowed', label: 'Borrowed Books', icon: ClockIcon },
-                  { id: 'reserved', label: 'Reserved Books', icon: CalendarDaysIcon },
-                  { id: 'history', label: 'Reading History', icon: ArrowPathIcon },
-                  { id: 'profile', label: 'Profile', icon: UserCircleIcon },
-                  { id: 'books', label: 'Books', icon: BookOpenIcon },
+                  { id: 'borrowed', label: 'Borrowed', icon: ClockIcon },
+                  { id: 'reserved', label: 'Reserved', icon: CalendarDaysIcon },
+                  { id: 'history', label: 'History', icon: ArrowPathIcon },
                   { id: 'favorites', label: 'Favorites', icon: HeartIcon },
+                  { id: 'books', label: 'Browse', icon: EyeIcon },
+                  { id: 'profile', label: 'Profile', icon: UserCircleIcon },
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors duration-200 ${
+                    className={`flex items-center space-x-2 px-4 sm:px-6 py-3 rounded-xl font-medium text-sm whitespace-nowrap transition-all duration-200 ${
                       activeTab === tab.id
-                        ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                        : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-600'
+                        ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/30'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700/50'
                     }`}
                   >
-                    <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                    <tab.icon className="w-5 h-5" />
                     <span className="hidden sm:inline">{tab.label}</span>
-                    <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
                   </button>
                 ))}
               </nav>

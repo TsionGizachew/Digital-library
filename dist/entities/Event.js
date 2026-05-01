@@ -26,5 +26,25 @@ const EventSchema = new mongoose_1.Schema({
         },
     },
 });
+EventSchema.pre(/^find/, function (next) {
+    const currentDate = new Date();
+    exports.Event.updateMany({
+        date: { $lt: currentDate },
+        status: 'upcoming',
+    }, {
+        $set: { status: 'past' },
+    }).exec();
+    next();
+});
+EventSchema.statics.updateEventStatuses = async function () {
+    const currentDate = new Date();
+    const result = await this.updateMany({
+        date: { $lt: currentDate },
+        status: 'upcoming',
+    }, {
+        $set: { status: 'past' },
+    });
+    return result;
+};
 exports.Event = (0, mongoose_1.model)('Event', EventSchema);
 //# sourceMappingURL=Event.js.map

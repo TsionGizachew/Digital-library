@@ -40,4 +40,39 @@ const EventSchema = new Schema<IEvent>(
   }
 );
 
+// Middleware to automatically update status based on date before any find operation
+EventSchema.pre(/^find/, function (next) {
+  const currentDate = new Date();
+  
+  // Update all events where date has passed and status is still 'upcoming'
+  Event.updateMany(
+    {
+      date: { $lt: currentDate },
+      status: 'upcoming',
+    },
+    {
+      $set: { status: 'past' },
+    }
+  ).exec();
+  
+  next();
+});
+
+// Static method to manually update event statuses
+EventSchema.statics.updateEventStatuses = async function () {
+  const currentDate = new Date();
+  
+  const result = await this.updateMany(
+    {
+      date: { $lt: currentDate },
+      status: 'upcoming',
+    },
+    {
+      $set: { status: 'past' },
+    }
+  );
+  
+  return result;
+};
+
 export const Event = model<IEvent>('Event', EventSchema);

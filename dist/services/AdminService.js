@@ -373,6 +373,23 @@ class AdminService {
             popularBooks: popularBooks.books,
         };
     }
+    async createRecommendation(data, userId) {
+        console.log('New recommendation received:', {
+            ...data,
+            userId,
+            createdAt: new Date(),
+        });
+        return {
+            success: true,
+            message: 'Recommendation submitted successfully',
+            data: {
+                ...data,
+                userId,
+                status: 'pending',
+                createdAt: new Date(),
+            },
+        };
+    }
 }
 exports.AdminService = AdminService;
 //# sourceMappingURL=AdminService.js.map

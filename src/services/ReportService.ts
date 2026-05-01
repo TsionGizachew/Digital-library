@@ -1,8 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { Response } from 'express';
 import { AdminService } from './AdminService';
-import path from 'path';
-import fs from 'fs';
 
 export class ReportService {
   private adminService: AdminService;
@@ -11,214 +9,394 @@ export class ReportService {
     this.adminService = new AdminService();
   }
 
+  private addText(doc: PDFKit.PDFDocument, text: string, x: number, y: number, options: any = {}) {
+    // Helper method to ensure text is always readable
+    doc.text(text, x, y, {
+      ...options,
+      lineBreak: true,
+      continued: false
+    });
+  }
+
   async generateLibraryReport(res: Response): Promise<void> {
     try {
+      // Create PDF with simple, reliable settings
       const doc = new PDFDocument({ 
-        margin: 40, 
         size: 'A4',
+        margin: 50,
         bufferPages: true
       });
       
       // Set response headers
+      const filename = `library-report-${new Date().toISOString().split('T')[0]}.pdf`;
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=library-report-${new Date().toISOString().split('T')[0]}.pdf`);
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
       
+      // Pipe to response
       doc.pipe(res);
 
       // Fetch data
       const stats = await this.adminService.getDashboardStats();
       const reportData = await this.adminService.generateReport();
 
-      // Header with gradient background
-      doc.rect(0, 0, 595, 120).fill('#EF4444');
-      doc.fontSize(24).fillColor('#FFFFFF').text('የየካ ክፍለ ከተማ ቤተ መጻሕፍት', 40, 30, { align: 'center', width: 515, features: ['rtla'] });
-      doc.fontSize(20).fillColor('#FFFFFF').text('Yeka Sub City Library', 40, 60, { align: 'center', width: 515 });
-      doc.fontSize(12).fillColor('#FEE2E2').text('Monthly Activity Report', 40, 88, { align: 'center', width: 515 });
-    
-      doc.y = 140;
-      doc.fontSize(10).fillColor('#6B7280').text(`Report Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, { align: 'right' });
+      // ===== PAGE 1: HEADER AND SUMMARY =====
+      
+      // Red header background
+      doc.rect(0, 0, 595.28, 100).fill('#DC2626');
+      
+      // Title - White text on red background
+      doc.fillColor('#FFFFFF')
+         .font('Helvetica-Bold')
+         .fontSize(28)
+         .text('YEKA SUB CITY LIBRARY', 50, 30, { align: 'center' });
+      
+      doc.fillColor('#FFFFFF')
+         .font('Helvetica')
+         .fontSize(16)
+         .text('Monthly Activity Report', 50, 65, { align: 'center' });
+      
+      // Reset position after header
+      doc.y = 120;
+      
+      // Report date
+      doc.fillColor('#000000')
+         .font('Helvetica')
+         .fontSize(10)
+         .text(`Generated: ${new Date().toLocaleDateString('en-US', { 
+           year: 'numeric', 
+           month: 'long', 
+           day: 'numeric' 
+         })}`, 50, 120, { align: 'right' });
+      
       doc.moveDown(2);
-
-      // Summary Section with modern cards
-      doc.fontSize(16).fillColor('#1F2937').text('Key Statistics / ቁልፍ ስታትስቲክስ', { underline: false });
-      doc.moveDown(0.5);
-
-      const summaryData = [
-        { label: 'Total Books', amharic: 'ጠቅላላ መጻሕፍት', value: stats.books.total, color: '#3B82F6' },
-        { label: 'Total Members', amharic: 'ጠቅላላ አባላት', value: stats.users.total, color: '#10B981' },
-        { label: 'Books Borrowed', amharic: 'የተበደሩ መጻሕፍት', value: stats.bookings.approved, color: '#F59E0B' },
-        { label: 'Overdue Books', amharic: 'ዘግይተው የቀሩ', value: stats.bookings.overdue, color: '#EF4444' },
+      
+      // Summary Statistics Section
+      doc.fillColor('#000000')
+         .font('Helvetica-Bold')
+         .fontSize(18)
+         .text('SUMMARY STATISTICS', 50);
+      
+      doc.moveDown(1);
+      
+      // Draw statistics boxes
+      const statsData = [
+        { label: 'Total Books', value: stats.books.total.toString(), color: '#3B82F6' },
+        { label: 'Total Members', value: stats.users.total.toString(), color: '#10B981' },
+        { label: 'Books Borrowed', value: stats.bookings.approved.toString(), color: '#F59E0B' },
+        { label: 'Overdue Books', value: stats.bookings.overdue.toString(), color: '#EF4444' }
       ];
-
-      let startY = doc.y;
-      summaryData.forEach((item, index) => {
-        const col = index % 2;
-        const row = Math.floor(index / 2);
-        const x = 40 + (col * 270);
-        const y = startY + (row * 85);
+      
+      let yPos = doc.y;
+      statsData.forEach((stat, index) => {
+        const xPos = 50 + (index % 2) * 250;
+        const yOffset = Math.floor(index / 2) * 80;
         
-        // Card background
-        doc.rect(x, y, 250, 75).fill('#FFFFFF').stroke('#E5E7EB');
+        // Box border
+        doc.rect(xPos, yPos + yOffset, 230, 70)
+           .strokeColor('#CCCCCC')
+           .lineWidth(1)
+           .stroke();
         
-        // Color bar
-        doc.rect(x, y, 5, 75).fill(item.color);
+        // Colored left border
+        doc.rect(xPos, yPos + yOffset, 5, 70)
+           .fillColor(stat.color)
+           .fill();
         
-        // Text
-        doc.fontSize(11).fillColor('#6B7280').text(item.label, x + 15, y + 12);
-        doc.fontSize(9).fillColor('#9CA3AF').text(item.amharic, x + 15, y + 28);
-        doc.fontSize(24).fillColor('#1F2937').text(item.value.toString(), x + 15, y + 45);
+        // Label
+        doc.fillColor('#666666')
+           .font('Helvetica')
+           .fontSize(11)
+           .text(stat.label, xPos + 15, yPos + yOffset + 15, { width: 200 });
+        
+        // Value
+        doc.fillColor('#000000')
+           .font('Helvetica-Bold')
+           .fontSize(24)
+           .text(stat.value, xPos + 15, yPos + yOffset + 35, { width: 200 });
       });
-
-      doc.y = startY + 190;
-
-      // New Books Section
+      
+      doc.y = yPos + 170;
+      
+      // ===== PAGE 2: NEW BOOKS =====
       if (reportData.newBooks && reportData.newBooks.length > 0) {
         doc.addPage();
         
         // Section header
-        doc.rect(40, 40, 515, 35).fill('#3B82F6');
-        doc.fontSize(16).fillColor('#FFFFFF').text('New Books This Month / በዚህ ወር አዲስ መጻሕፍት', 50, 50);
-        doc.fontSize(11).fillColor('#DBEAFE').text(`${reportData.newBooks.length} books added`, 420, 53);
-      
-        doc.y = 95;
-
-        reportData.newBooks.slice(0, 15).forEach((book: any, index: number) => {
-          if (doc.y > 700) {
-            doc.addPage();
-            doc.y = 40;
-          }
-          
-          // Book card
-          doc.rect(40, doc.y, 515, 50).fill('#F9FAFB').stroke('#E5E7EB');
-          doc.fontSize(11).fillColor('#1F2937').text(`${index + 1}. ${book.title}`, 50, doc.y + 10, { width: 495 });
-          doc.fontSize(9).fillColor('#6B7280').text(`Author: ${book.author}`, 50, doc.y + 25);
-          doc.fontSize(8).fillColor('#9CA3AF').text(`Category: ${book.category} | ISBN: ${book.isbn || 'N/A'}`, 50, doc.y + 38);
-          
-          doc.y += 55;
-        });
-      }
-
-      // New Members Section
-      if (reportData.newMembers && reportData.newMembers.length > 0) {
-        doc.addPage();
+        doc.rect(0, 0, 595.28, 60).fill('#3B82F6');
+        doc.fillColor('#FFFFFF')
+           .font('Helvetica-Bold')
+           .fontSize(20)
+           .text('NEW BOOKS THIS MONTH', 50, 20);
         
-        // Section header
-        doc.rect(40, 40, 515, 35).fill('#10B981');
-        doc.fontSize(16).fillColor('#FFFFFF').text('New Members This Month / በዚህ ወር አዲስ አባላት', 50, 50);
-        doc.fontSize(11).fillColor('#D1FAE5').text(`${reportData.newMembers.length} members joined`, 410, 53);
-      
-        doc.y = 95;
-
-        reportData.newMembers.slice(0, 20).forEach((member: any, index: number) => {
-          if (doc.y > 700) {
+        doc.fillColor('#E0F2FE')
+           .font('Helvetica')
+           .fontSize(12)
+           .text(`${reportData.newBooks.length} books added`, 50, 42);
+        
+        doc.y = 80;
+        
+        // List books
+        reportData.newBooks.slice(0, 20).forEach((book: any, index: number) => {
+          if (doc.y > 720) {
             doc.addPage();
-            doc.y = 40;
+            doc.y = 50;
           }
           
-          // Member row
+          // Book entry background
           const bgColor = index % 2 === 0 ? '#F9FAFB' : '#FFFFFF';
-          doc.rect(40, doc.y, 515, 35).fill(bgColor).stroke('#E5E7EB');
-          doc.fontSize(10).fillColor('#1F2937').text(`${index + 1}. ${member.name}`, 50, doc.y + 8);
-          doc.fontSize(8).fillColor('#6B7280').text(`${member.email}`, 50, doc.y + 22);
-          doc.fontSize(8).fillColor('#9CA3AF').text(`Joined: ${new Date(member.createdAt).toLocaleDateString()}`, 400, doc.y + 22);
+          doc.rect(50, doc.y, 495, 45)
+             .fillColor(bgColor)
+             .fill()
+             .strokeColor('#E5E7EB')
+             .stroke();
           
-          doc.y += 35;
-        });
-      }
-
-      // Popular Books Section
-      if (reportData.popularBooks && reportData.popularBooks.length > 0) {
-        doc.addPage();
-        
-        // Section header
-        doc.rect(40, 40, 515, 35).fill('#F59E0B');
-        doc.fontSize(16).fillColor('#FFFFFF').text('Most Popular Books / በጣም ተወዳጅ መጻሕፍት', 50, 50);
-      
-        doc.y = 95;
-
-        reportData.popularBooks.forEach((book: any, index: number) => {
-          if (doc.y > 700) {
-            doc.addPage();
-            doc.y = 40;
-          }
+          // Book number
+          doc.fillColor('#3B82F6')
+             .font('Helvetica-Bold')
+             .fontSize(10)
+             .text(`${index + 1}.`, 60, doc.y + 10);
           
-          // Book card with ranking
-          const rankColors = ['#EF4444', '#F59E0B', '#10B981'];
-          const rankColor = index < 3 ? rankColors[index] : '#6B7280';
+          // Book title
+          doc.fillColor('#000000')
+             .font('Helvetica-Bold')
+             .fontSize(11)
+             .text(book.title, 80, doc.y + 10, { width: 450, ellipsis: true });
           
-          doc.rect(40, doc.y, 515, 55).fill('#FFFBEB').stroke('#FDE68A');
-          
-          // Rank badge
-          doc.circle(60, doc.y + 27, 15).fill(rankColor);
-          doc.fontSize(12).fillColor('#FFFFFF').text((index + 1).toString(), 55, doc.y + 20);
-          
-          doc.fontSize(11).fillColor('#1F2937').text(book.title, 85, doc.y + 10, { width: 460 });
-          doc.fontSize(9).fillColor('#6B7280').text(`by ${book.author}`, 85, doc.y + 25);
-          doc.fontSize(8).fillColor('#92400E').text(`Borrowed: ${book.borrowCount || 0} times | Rating: ${book.rating?.average?.toFixed(1) || 'N/A'}`, 85, doc.y + 38);
-          
-          doc.y += 60;
-        });
-      }
-
-      // Category Statistics
-      doc.addPage();
-      
-      // Section header
-      doc.rect(40, 40, 515, 35).fill('#8B5CF6');
-      doc.fontSize(16).fillColor('#FFFFFF').text('Books by Category / መጻሕፍት በምድብ', 50, 50);
-    
-      doc.y = 95;
-
-      if (stats.categories && stats.categories.length > 0) {
-        stats.categories.forEach((cat: any, index: number) => {
-          if (doc.y > 700) {
-            doc.addPage();
-            doc.y = 40;
-          }
-          
-          const percentage = ((cat.totalBooks / stats.books.total) * 100).toFixed(1);
-          
-          // Category row
-          doc.rect(40, doc.y, 515, 45).fill('#FAFAFA').stroke('#E5E7EB');
-          doc.fontSize(11).fillColor('#1F2937').text(cat.category, 50, doc.y + 8);
-          doc.fontSize(9).fillColor('#6B7280').text(`${cat.totalBooks} books (${percentage}%)`, 50, doc.y + 24);
-          
-          // Progress bar
-          const barWidth = 350;
-          const fillWidth = (cat.totalBooks / stats.books.total) * barWidth;
-          doc.rect(180, doc.y + 25, barWidth, 12).fill('#E5E7EB');
-          doc.rect(180, doc.y + 25, fillWidth, 12).fill('#8B5CF6');
+          // Author
+          doc.fillColor('#666666')
+             .font('Helvetica')
+             .fontSize(9)
+             .text(`Author: ${book.author}`, 80, doc.y + 25, { width: 450 });
           
           doc.y += 50;
         });
       }
-
-      // Add page numbers
-      const pages = doc.bufferedPageRange();
-      for (let i = 0; i < pages.count; i++) {
+      
+      // ===== PAGE 3: NEW MEMBERS =====
+      if (reportData.newMembers && reportData.newMembers.length > 0) {
+        doc.addPage();
+        
+        // Section header
+        doc.rect(0, 0, 595.28, 60).fill('#10B981');
+        doc.fillColor('#FFFFFF')
+           .font('Helvetica-Bold')
+           .fontSize(20)
+           .text('NEW MEMBERS THIS MONTH', 50, 20);
+        
+        doc.fillColor('#D1FAE5')
+           .font('Helvetica')
+           .fontSize(12)
+           .text(`${reportData.newMembers.length} members joined`, 50, 42);
+        
+        doc.y = 80;
+        
+        // List members
+        reportData.newMembers.slice(0, 25).forEach((member: any, index: number) => {
+          if (doc.y > 720) {
+            doc.addPage();
+            doc.y = 50;
+          }
+          
+          // Member entry
+          const bgColor = index % 2 === 0 ? '#F9FAFB' : '#FFFFFF';
+          doc.rect(50, doc.y, 495, 35)
+             .fillColor(bgColor)
+             .fill()
+             .strokeColor('#E5E7EB')
+             .stroke();
+          
+          // Member number
+          doc.fillColor('#10B981')
+             .font('Helvetica-Bold')
+             .fontSize(10)
+             .text(`${index + 1}.`, 60, doc.y + 8);
+          
+          // Member name
+          doc.fillColor('#000000')
+             .font('Helvetica-Bold')
+             .fontSize(10)
+             .text(member.name, 80, doc.y + 8, { width: 250 });
+          
+          // Email
+          doc.fillColor('#666666')
+             .font('Helvetica')
+             .fontSize(8)
+             .text(member.email, 80, doc.y + 22, { width: 250 });
+          
+          // Join date
+          doc.fillColor('#999999')
+             .font('Helvetica')
+             .fontSize(8)
+             .text(`Joined: ${new Date(member.createdAt).toLocaleDateString()}`, 350, doc.y + 15);
+          
+          doc.y += 40;
+        });
+      }
+      
+      // ===== PAGE 4: POPULAR BOOKS =====
+      if (reportData.popularBooks && reportData.popularBooks.length > 0) {
+        doc.addPage();
+        
+        // Section header
+        doc.rect(0, 0, 595.28, 60).fill('#F59E0B');
+        doc.fillColor('#FFFFFF')
+           .font('Helvetica-Bold')
+           .fontSize(20)
+           .text('MOST POPULAR BOOKS', 50, 20);
+        
+        doc.y = 80;
+        
+        // List popular books
+        reportData.popularBooks.forEach((book: any, index: number) => {
+          if (doc.y > 700) {
+            doc.addPage();
+            doc.y = 50;
+          }
+          
+          // Book card
+          doc.rect(50, doc.y, 495, 60)
+             .fillColor('#FFFBEB')
+             .fill()
+             .strokeColor('#FDE68A')
+             .lineWidth(2)
+             .stroke();
+          
+          // Rank badge
+          const rankColors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6'];
+          const rankColor = index < 4 ? rankColors[index] : '#6B7280';
+          
+          doc.circle(75, doc.y + 30, 18)
+             .fillColor(rankColor)
+             .fill();
+          
+          doc.fillColor('#FFFFFF')
+             .font('Helvetica-Bold')
+             .fontSize(14)
+             .text((index + 1).toString(), 68, doc.y + 22);
+          
+          // Book details
+          doc.fillColor('#000000')
+             .font('Helvetica-Bold')
+             .fontSize(12)
+             .text(book.title, 105, doc.y + 12, { width: 420, ellipsis: true });
+          
+          doc.fillColor('#666666')
+             .font('Helvetica')
+             .fontSize(10)
+             .text(`by ${book.author}`, 105, doc.y + 30, { width: 420 });
+          
+          doc.fillColor('#92400E')
+             .font('Helvetica')
+             .fontSize(9)
+             .text(`Borrowed: ${book.borrowCount || 0} times`, 105, doc.y + 45);
+          
+          doc.y += 70;
+        });
+      }
+      
+      // ===== PAGE 5: CATEGORIES =====
+      doc.addPage();
+      
+      // Section header
+      doc.rect(0, 0, 595.28, 60).fill('#8B5CF6');
+      doc.fillColor('#FFFFFF')
+         .font('Helvetica-Bold')
+         .fontSize(20)
+         .text('BOOKS BY CATEGORY', 50, 20);
+      
+      doc.y = 80;
+      
+      if (stats.categories && stats.categories.length > 0) {
+        stats.categories.forEach((cat: any) => {
+          if (doc.y > 720) {
+            doc.addPage();
+            doc.y = 50;
+          }
+          
+          const percentage = ((cat.totalBooks / stats.books.total) * 100).toFixed(1);
+          
+          // Category box
+          doc.rect(50, doc.y, 495, 50)
+             .fillColor('#FAFAFA')
+             .fill()
+             .strokeColor('#E5E7EB')
+             .stroke();
+          
+          // Category name
+          doc.fillColor('#000000')
+             .font('Helvetica-Bold')
+             .fontSize(12)
+             .text(cat.category, 60, doc.y + 10);
+          
+          // Book count
+          doc.fillColor('#666666')
+             .font('Helvetica')
+             .fontSize(10)
+             .text(`${cat.totalBooks} books (${percentage}%)`, 60, doc.y + 28);
+          
+          // Progress bar
+          const barWidth = 300;
+          const barX = 220;
+          const barY = doc.y + 20;
+          const fillWidth = (cat.totalBooks / stats.books.total) * barWidth;
+          
+          // Bar background
+          doc.rect(barX, barY, barWidth, 15)
+             .fillColor('#E5E7EB')
+             .fill();
+          
+          // Bar fill
+          doc.rect(barX, barY, fillWidth, 15)
+             .fillColor('#8B5CF6')
+             .fill();
+          
+          doc.y += 60;
+        });
+      }
+      
+      // ===== ADD PAGE NUMBERS TO ALL PAGES =====
+      const range = doc.bufferedPageRange();
+      for (let i = 0; i < range.count; i++) {
         doc.switchToPage(i);
         
-        // Footer
-        doc.rect(0, doc.page.height - 50, 595, 50).fill('#F3F4F6');
-        doc.fontSize(8).fillColor('#6B7280').text(
-          'የየካ ክፍለ ከተማ ቤተ መጻሕፍት - Yeka Sub City Library - Confidential Report',
-          40,
-          doc.page.height - 35,
-          { align: 'center', width: 515 }
-        );
-        doc.fontSize(8).fillColor('#9CA3AF').text(
-          `Page ${i + 1} of ${pages.count}`,
-          0,
-          doc.page.height - 20,
-          { align: 'center' }
-        );
+        // Footer background
+        doc.rect(0, 792 - 40, 595.28, 40)
+           .fillColor('#F3F4F6')
+           .fill();
+        
+        // Footer text
+        doc.fillColor('#6B7280')
+           .font('Helvetica')
+           .fontSize(8)
+           .text(
+             'Yeka Sub City Library - Confidential Report',
+             50,
+             792 - 28,
+             { align: 'center', width: 495 }
+           );
+        
+        // Page number
+        doc.fillColor('#9CA3AF')
+           .fontSize(8)
+           .text(
+             `Page ${i + 1} of ${range.count}`,
+             50,
+             792 - 15,
+             { align: 'center', width: 495 }
+           );
       }
-
+      
+      // Finalize PDF
       doc.end();
+      
     } catch (error) {
       console.error('PDF generation error:', error);
       if (!res.headersSent) {
-        res.status(500).json({ success: false, message: 'Failed to generate PDF report' });
+        res.status(500).json({ 
+          success: false, 
+          message: 'Failed to generate PDF report',
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
       }
     }
   }
