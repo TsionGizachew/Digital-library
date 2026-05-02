@@ -151,7 +151,7 @@ router.get('/search', validatePaginationQuery, bookController.searchBooks);
  *       403:
  *         description: Forbidden
  */
-router.get('/stats', authenticate, authorize(UserRole.ADMIN), bookController.getBookStats);
+router.get('/stats', authenticate, authorize(UserRole.ADMIN, UserRole.SUPERADMIN), bookController.getBookStats);
 
 /**
  * @swagger
@@ -181,7 +181,7 @@ router.get('/categories', bookController.getCategories);
  *       403:
  *         description: Forbidden
  */
-router.get('/categories/stats', authenticate, authorize(UserRole.ADMIN), bookController.getCategoryStats);
+router.get('/categories/stats', authenticate, authorize(UserRole.ADMIN, UserRole.SUPERADMIN), bookController.getCategoryStats);
 
 /**
  * @swagger
@@ -224,7 +224,7 @@ router.get('/category/:category', validatePaginationQuery, bookController.getBoo
  *       403:
  *         description: Forbidden
  */
-router.get('/status/:status', authenticate, authorize(UserRole.ADMIN), validatePaginationQuery, bookController.getBooksByStatus);
+router.get('/status/:status', authenticate, authorize(UserRole.ADMIN, UserRole.SUPERADMIN), validatePaginationQuery, bookController.getBooksByStatus);
 
 /**
  * @swagger
@@ -304,7 +304,7 @@ router.get('/isbn/:isbn', bookController.getBookByISBN);
  *       403:
  *         description: Forbidden
  */
-router.post('/', authenticate, authorize(UserRole.ADMIN),validateBookCreation, bookController.createBook);
+router.post('/', authenticate, authorize(UserRole.ADMIN, UserRole.SUPERADMIN),validateBookCreation, bookController.createBook);
 
 /**
  * @swagger
@@ -353,7 +353,7 @@ router.get('/:id', validateObjectId('id'), handleValidationErrors, bookControlle
 router.put(
   '/:id',
   authenticate,
-  authorize(UserRole.ADMIN),
+  authorize(UserRole.ADMIN, UserRole.SUPERADMIN),
   validateObjectId('id'),
   validateBookUpdate,
   bookController.updateBook
@@ -386,7 +386,7 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  authorize(UserRole.ADMIN),
+  authorize(UserRole.ADMIN, UserRole.SUPERADMIN),
   validateObjectId('id'),
   handleValidationErrors,
   bookController.deleteBook
@@ -456,7 +456,7 @@ router.get(
 router.put(
   '/:id/status',
   authenticate,
-  authorize(UserRole.ADMIN),
+  authorize(UserRole.ADMIN, UserRole.SUPERADMIN),
   validateObjectId('id'),
   handleValidationErrors,
   bookController.updateBookStatus

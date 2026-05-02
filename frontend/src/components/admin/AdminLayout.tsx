@@ -35,6 +35,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, currentPage = 'dash
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  // Check if user is SUPERADMIN
+  const isSuperAdmin = user?.role === 'superadmin';
+
   const handleProfileClick = () => {
     navigate('/admin/profile');
   };
@@ -65,7 +68,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, currentPage = 'dash
     { name: t('admin.borrowing.title'), href: '/admin/borrowing', icon: ClipboardDocumentListIcon, id: 'borrowing' },
     { name: t('navigation.announcements'), href: '/admin/announcements', icon: SpeakerWaveIcon, id: 'announcements' },
     { name: t('navigation.events'), href: '/admin/events', icon: CalendarDaysIcon, id: 'events' },
-    { name: t('navigation.settings'), href: '/admin/settings', icon: Cog6ToothIcon, id: 'settings' },
+    // Only show Settings to SUPERADMIN
+    ...(isSuperAdmin ? [
+      { name: t('navigation.settings'), href: '/admin/settings', icon: Cog6ToothIcon, id: 'settings' }
+    ] : []),
   ];
 
   const sidebarVariants = {
@@ -173,9 +179,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, currentPage = 'dash
                 {getUserInitials(user?.name)}
               </div>
               <div className="min-w-0 text-left">
-                <p className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                  {user?.name || 'Admin'}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    {user?.name || 'Admin'}
+                  </p>
+                  {isSuperAdmin && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded uppercase tracking-wide shadow-sm flex-shrink-0">
+                      Super
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                   {user?.email || 'admin@library.com'}
                 </p>

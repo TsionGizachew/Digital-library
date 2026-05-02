@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircleIcon, GlobeAltIcon, DocumentTextIcon, BellIcon, ServerIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
+import { CheckCircleIcon, GlobeAltIcon, DocumentTextIcon, BellIcon, ServerIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
 import { getAdminSettings, updateAdminSettings } from '../../services/AdminSettingService';
+import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 interface ToggleSwitchProps {
@@ -38,6 +40,8 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange, label, d
 );
 
 const AdminSettingsPage: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'library' | 'borrowing' | 'notifications' | 'system'>('library');
@@ -68,8 +72,14 @@ const AdminSettingsPage: React.FC = () => {
   });
 
   useEffect(() => {
+    // Redirect if not SUPERADMIN
+    if (user && user.role !== 'superadmin') {
+      toast.error('Access denied. Only SUPERADMIN can access settings.');
+      navigate('/admin');
+      return;
+    }
     fetchSettings();
-  }, []);
+  }, [user, navigate]);
 
   const fetchSettings = async () => {
     try {
@@ -119,6 +129,27 @@ const AdminSettingsPage: React.FC = () => {
       <div className="flex items-center justify-center h-64 gap-3">
         <div className="spinner"></div>
         <p className="text-neutral-600 dark:text-neutral-400">Loading settings...</p>
+      </div>
+    );
+  }
+
+  // Access denied for non-SUPERADMIN
+  if (user?.role !== 'superadmin') {
+    return (
+      <div className="flex flex-col items-center justify-center h-64">
+        <ShieldExclamationIcon className="w-16 h-16 text-error-500 mb-4" />
+        <h2 className="text-xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+          Access Denied
+        </h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-center">
+          Only SUPERADMIN can access system settings.
+        </p>
+        <button
+          onClick={() => navigate('/admin')}
+          className="mt-4 btn-primary"
+        >
+          Go to Dashboard
+        </button>
       </div>
     );
   }

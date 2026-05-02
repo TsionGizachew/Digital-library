@@ -9,6 +9,7 @@ import {
   validateBookCreation,
   handleValidationErrors,
 } from '../middleware';
+import { requireSuperAdmin, requireAdmin, canManageUser } from '../middleware/roleAuth';
 import { upload } from '../middleware/upload';
 import { UserRole } from '../types';
 import { body } from 'express-validator';
@@ -16,9 +17,11 @@ import { body } from 'express-validator';
 const router = Router();
 const adminController = new AdminController();
 
-// All routes require admin authentication
+// All routes require authentication
 router.use(authenticate);
-router.use(authorize(UserRole.ADMIN));
+
+// Most routes require admin or superadmin
+// Specific routes will override with requireSuperAdmin where needed
 
 /**
  * @swagger
@@ -36,7 +39,7 @@ router.use(authorize(UserRole.ADMIN));
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/dashboard', adminController.getDashboard);
+router.get('/dashboard', requireAdmin, adminController.getDashboard);
 
 /**
  * @swagger
@@ -54,7 +57,7 @@ router.get('/dashboard', adminController.getDashboard);
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/stats', adminController.getStats);
+router.get('/stats', requireAdmin, adminController.getStats);
 
 /**
  * @swagger
@@ -72,7 +75,7 @@ router.get('/stats', adminController.getStats);
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/activity', adminController.getSystemActivity);
+router.get('/activity', requireAdmin, adminController.getSystemActivity);
 
 /**
  * @swagger
@@ -90,13 +93,13 @@ router.get('/activity', adminController.getSystemActivity);
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/health', adminController.getSystemHealth);
+router.get('/health', requireAdmin, adminController.getSystemHealth);
 
 /**
  * @swagger
  * /api/v1/admin/audit-log:
  *   get:
- *     summary: Get audit log
+ *     summary: Get audit log (SUPERADMIN ONLY)
  *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
@@ -128,9 +131,9 @@ router.get('/health', adminController.getSystemHealth);
  *       401:
  *         description: Unauthorized
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Forbidden - SUPERADMIN access required
  */
-router.get('/audit-log', validatePaginationQuery, adminController.getAuditLog);
+router.get('/audit-log', requireSuperAdmin, validatePaginationQuery, adminController.getAuditLog);
 
 // User Management Routes
 /**
@@ -149,13 +152,13 @@ router.get('/audit-log', validatePaginationQuery, adminController.getAuditLog);
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/users', validatePaginationQuery, adminController.getAllUsers);
+router.get('/users', requireAdmin, validatePaginationQuery, adminController.getAllUsers);
 
 /**
  * @swagger
  * /api/v1/admin/users/{userId}/promote:
  *   put:
- *     summary: Promote user to admin
+ *     summary: Promote user to admin (SUPERADMIN ONLY)
  *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
@@ -171,12 +174,13 @@ router.get('/users', validatePaginationQuery, adminController.getAllUsers);
  *       401:
  *         description: Unauthorized
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Forbidden - SUPERADMIN access required
  *       404:
  *         description: User not found
  */
 router.put(
   '/users/:userId/promote',
+  requireSuperAdmin,
   validateObjectId('userId'),
   handleValidationErrors,
   adminController.promoteUserToAdmin
@@ -186,7 +190,7 @@ router.put(
  * @swagger
  * /api/v1/admin/users/{userId}/demote:
  *   put:
- *     summary: Demote admin to user
+ *     summary: Demote admin to user (SUPERADMIN ONLY)
  *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
@@ -202,15 +206,48 @@ router.put(
  *       401:
  *         description: Unauthorized
  *       403:
- *         description: Forbidden - Admin access required
+ *         description: Forbidden - SUPERADMIN access required
  *       404:
  *         description: User not found
  */
 router.put(
   '/users/:userId/demote',
+  requireSuperAdmin,
   validateObjectId('userId'),
   handleValidationErrors,
   adminController.demoteAdminToUser
+);
+
+/**
+ * @swagger
+ * /api/v1/admin/users/{userId}/promote-superadmin:
+ *   put:
+ *     summary: Promote admin to superadmin (SUPERADMIN ONLY)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Admin promoted to superadmin successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - SUPERADMIN access required
+ *       404:
+ *         description: User not found
+ */
+router.put(
+  '/users/:userId/promote-superadmin',
+  requireSuperAdmin,
+  validateObjectId('userId'),
+  handleValidationErrors,
+  adminController.promoteAdminToSuperAdmin
 );
 
 /**
@@ -239,6 +276,8 @@ router.put(
  */
 router.put(
   '/users/:userId/block',
+  requireAdmin,
+  canManageUser,
   validateObjectId('userId'),
   handleValidationErrors,
   adminController.blockUser
@@ -270,6 +309,8 @@ router.put(
  */
 router.put(
   '/users/:userId/unblock',
+  requireAdmin,
+  canManageUser,
   validateObjectId('userId'),
   handleValidationErrors,
   adminController.unblockUser
@@ -301,6 +342,7 @@ router.put(
  */
 router.get(
   '/users/:userId/borrowing-history',
+  requireAdmin,
   validateObjectId('userId'),
   handleValidationErrors,
   adminController.getUserBorrowingHistory
@@ -341,6 +383,7 @@ router.get(
  */
 router.put(
   '/users/bulk-update',
+  requireAdmin,
   [
     body('userIds').isArray().withMessage('User IDs must be an array'),
     body('status').isIn(['active', 'blocked', 'pending']).withMessage('Invalid status'),
@@ -387,6 +430,8 @@ router.put(
  */
 router.put(
   '/users/:userId/reset-password',
+  requireAdmin,
+  canManageUser,
   validateObjectId('userId'),
   [
     body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
@@ -412,7 +457,7 @@ router.put(
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/borrowing', adminController.getBorrowingRecords);
+router.get('/borrowing', requireAdmin, adminController.getBorrowingRecords);
 
 /**
  * @swagger
@@ -440,6 +485,7 @@ router.get('/borrowing', adminController.getBorrowingRecords);
  */
 router.post(
   '/borrowing/:recordId/approve',
+  requireAdmin,
   validateObjectId('recordId'),
   handleValidationErrors,
   adminController.approveBorrowingRequest
@@ -482,6 +528,7 @@ router.post(
  */
 router.post(
   '/borrowing/:recordId/reject',
+  requireAdmin,
   validateObjectId('recordId'),
   [body('reason').notEmpty().withMessage('Rejection reason is required')],
   handleValidationErrors,
@@ -514,6 +561,7 @@ router.post(
  */
 router.post(
   '/borrowing/:recordId/return',
+  requireAdmin,
   validateObjectId('recordId'),
   handleValidationErrors,
   adminController.returnBook
@@ -536,7 +584,7 @@ router.post(
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/books', validatePaginationQuery, adminController.getAllBooks);
+router.get('/books', requireAdmin, validatePaginationQuery, adminController.getAllBooks);
 
 /**
  * @swagger
@@ -613,7 +661,7 @@ router.get('/books', validatePaginationQuery, adminController.getAllBooks);
  *       409:
  *         description: Conflict - Book with ISBN already exists
  */
-router.post('/books', validateBookCreation, adminController.createBook);
+router.post('/books', requireAdmin, validateBookCreation, adminController.createBook);
 
 /**
  * @swagger
@@ -653,6 +701,7 @@ router.post('/books', validateBookCreation, adminController.createBook);
  */
 router.put(
   '/books/:bookId/status',
+  requireAdmin,
   validateObjectId('bookId'),
   [
     body('status').isIn(['available', 'booked', 'maintenance']).withMessage('Invalid status'),
@@ -696,6 +745,7 @@ router.put(
  */
 router.put(
   '/books/bulk-update',
+  requireAdmin,
   [
     body('bookIds').isArray().withMessage('Book IDs must be an array'),
     body('status').isIn(['available', 'booked', 'maintenance']).withMessage('Invalid status'),
@@ -728,7 +778,7 @@ router.put(
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/export/users', adminController.exportUsers);
+router.get('/export/users', requireAdmin, adminController.exportUsers);
 
 /**
  * @swagger
@@ -753,7 +803,7 @@ router.get('/export/users', adminController.exportUsers);
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/export/books', adminController.exportBooks);
+router.get('/export/books', requireAdmin, adminController.exportBooks);
 
 // Event Management Routes
 /**
@@ -768,7 +818,7 @@ router.get('/export/books', adminController.exportBooks);
  *       200:
  *         description: Events retrieved successfully
  */
-router.get('/events', eventController.getAllEvents);
+router.get('/events', requireAdmin, eventController.getAllEvents);
 
 /**
  * @swagger
@@ -788,7 +838,7 @@ router.get('/events', eventController.getAllEvents);
  *       201:
  *         description: Event created successfully
  */
-router.post('/events', upload.single('image'), eventController.createEvent);
+router.post('/events', requireAdmin, upload.single('image'), eventController.createEvent);
 
 /**
  * @swagger
@@ -814,8 +864,8 @@ router.post('/events', upload.single('image'), eventController.createEvent);
  *       200:
  *         description: Event updated successfully
  */
-router.get('/events/:eventId', validateObjectId('eventId'), handleValidationErrors, eventController.getEventById);
-router.put('/events/:eventId', validateObjectId('eventId'), upload.single('image'), handleValidationErrors, eventController.updateEvent);
+router.get('/events/:eventId', requireAdmin, validateObjectId('eventId'), handleValidationErrors, eventController.getEventById);
+router.put('/events/:eventId', requireAdmin, validateObjectId('eventId'), upload.single('image'), handleValidationErrors, eventController.updateEvent);
 
 /**
  * @swagger
@@ -835,7 +885,7 @@ router.put('/events/:eventId', validateObjectId('eventId'), upload.single('image
  *       200:
  *         description: Event deleted successfully
  */
-router.delete('/events/:eventId', validateObjectId('eventId'), handleValidationErrors, eventController.deleteEvent);
+router.delete('/events/:eventId', requireAdmin, validateObjectId('eventId'), handleValidationErrors, eventController.deleteEvent);
 
 // Announcement Management Routes
 /**
@@ -850,7 +900,7 @@ router.delete('/events/:eventId', validateObjectId('eventId'), handleValidationE
  *       200:
  *         description: Announcements retrieved successfully
  */
-router.get('/announcements', adminController.getAnnouncements);
+router.get('/announcements', requireAdmin, adminController.getAnnouncements);
 
 /**
  * @swagger
@@ -870,7 +920,7 @@ router.get('/announcements', adminController.getAnnouncements);
  *       201:
  *         description: Announcement created successfully
  */
-router.post('/announcements', upload.single('image'), adminController.createAnnouncement);
+router.post('/announcements', requireAdmin, upload.single('image'), adminController.createAnnouncement);
 
 /**
  * @swagger
@@ -898,6 +948,7 @@ router.post('/announcements', upload.single('image'), adminController.createAnno
  */
 router.put(
   '/announcements/:announcementId',
+  requireAdmin,
   validateObjectId('announcementId'),
   upload.single('image'),
   handleValidationErrors,
@@ -924,6 +975,7 @@ router.put(
  */
 router.delete(
   '/announcements/:announcementId',
+  requireAdmin,
   validateObjectId('announcementId'),
   handleValidationErrors,
   adminController.deleteAnnouncement
@@ -959,17 +1011,51 @@ router.delete(
  */
 router.put(
   '/announcements/:announcementId/status',
+  requireAdmin,
   validateObjectId('announcementId'),
   handleValidationErrors,
   adminController.toggleAnnouncementStatus
 );
 
-  // Settings Routes
-  router.get('/settings', adminController.getSettings);
-  router.put('/settings', adminController.updateSettings);
+  // Settings Routes (SUPERADMIN ONLY)
+  /**
+   * @swagger
+   * /api/v1/admin/settings:
+   *   get:
+   *     summary: Get system settings (SUPERADMIN ONLY)
+   *     tags: [Admin]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Settings retrieved successfully
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden - SUPERADMIN access required
+   */
+  router.get('/settings', requireSuperAdmin, adminController.getSettings);
+  
+  /**
+   * @swagger
+   * /api/v1/admin/settings:
+   *   put:
+   *     summary: Update system settings (SUPERADMIN ONLY)
+   *     tags: [Admin]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Settings updated successfully
+   *       401:
+   *         description: Unauthorized
+   *       403:
+   *         description: Forbidden - SUPERADMIN access required
+   */
+  router.put('/settings', requireSuperAdmin, adminController.updateSettings);
 
   // Recommendations Route
-  router.post('/recommendations', [
+  router.post('/recommendations', requireAdmin, [
     body('title').notEmpty().withMessage('Title is required'),
     body('description').notEmpty().withMessage('Description is required'),
     body('priority').isIn(['low', 'medium', 'high', 'urgent']).withMessage('Invalid priority'),

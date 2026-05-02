@@ -9,7 +9,7 @@ export class ReportService {
     this.adminService = new AdminService();
   }
 
-  private addText(doc: PDFKit.PDFDocument, text: string, x: number, y: number, options: any = {}) {
+  private addText(doc: typeof PDFDocument, text: string, x: number, y: number, options: any = {}) {
     // Helper method to ensure text is always readable
     doc.text(text, x, y, {
       ...options,

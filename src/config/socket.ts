@@ -78,7 +78,7 @@ export class SocketManager {
         socket.join(`user:${socket.userId}`);
         
         // Join admin users to admin room
-        if (socket.userRole === 'admin') {
+        if (socket.userRole === 'admin' || socket.userRole === 'superadmin') {
           socket.join('admin');
         }
       }

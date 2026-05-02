@@ -53,6 +53,11 @@ export class AdminController {
     res.status(200).json({ success: true, data });
   });
 
+  promoteAdminToSuperAdmin = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.promoteAdminToSuperAdmin(req.params.userId);
+    res.status(200).json({ success: true, data, message: 'Admin promoted to superadmin successfully' });
+  });
+
   blockUser = asyncHandler(async (req: Request, res: Response) => {
     const data = await adminService.blockUser(req.params.userId);
     res.status(200).json({ success: true, data });

@@ -44,6 +44,10 @@ class AdminController {
             const data = await adminService.demoteAdminToUser(req.params.userId);
             res.status(200).json({ success: true, data });
         });
+        this.promoteAdminToSuperAdmin = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+            const data = await adminService.promoteAdminToSuperAdmin(req.params.userId);
+            res.status(200).json({ success: true, data, message: 'Admin promoted to superadmin successfully' });
+        });
         this.blockUser = (0, asyncHandler_1.asyncHandler)(async (req, res) => {
             const data = await adminService.blockUser(req.params.userId);
             res.status(200).json({ success: true, data });

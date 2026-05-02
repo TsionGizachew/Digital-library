@@ -12,17 +12,17 @@ router.get('/popular', middleware_1.validatePaginationQuery, bookController.getP
 router.get('/recent', middleware_1.validatePaginationQuery, bookController.getRecentlyAddedBooks);
 router.get('/featured', bookController.getFeaturedBooks);
 router.get('/search', middleware_1.validatePaginationQuery, bookController.searchBooks);
-router.get('/stats', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN), bookController.getBookStats);
+router.get('/stats', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN, types_1.UserRole.SUPERADMIN), bookController.getBookStats);
 router.get('/categories', bookController.getCategories);
-router.get('/categories/stats', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN), bookController.getCategoryStats);
+router.get('/categories/stats', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN, types_1.UserRole.SUPERADMIN), bookController.getCategoryStats);
 router.get('/category/:category', middleware_1.validatePaginationQuery, bookController.getBooksByCategory);
-router.get('/status/:status', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN), middleware_1.validatePaginationQuery, bookController.getBooksByStatus);
+router.get('/status/:status', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN, types_1.UserRole.SUPERADMIN), middleware_1.validatePaginationQuery, bookController.getBooksByStatus);
 router.get('/isbn/:isbn', bookController.getBookByISBN);
-router.post('/', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN), middleware_1.validateBookCreation, bookController.createBook);
+router.post('/', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN, types_1.UserRole.SUPERADMIN), middleware_1.validateBookCreation, bookController.createBook);
 router.get('/:id', (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, bookController.getBookById);
-router.put('/:id', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN), (0, middleware_1.validateObjectId)('id'), middleware_1.validateBookUpdate, bookController.updateBook);
-router.delete('/:id', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN), (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, bookController.deleteBook);
+router.put('/:id', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN, types_1.UserRole.SUPERADMIN), (0, middleware_1.validateObjectId)('id'), middleware_1.validateBookUpdate, bookController.updateBook);
+router.delete('/:id', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN, types_1.UserRole.SUPERADMIN), (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, bookController.deleteBook);
 router.get('/:id/availability', (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, bookController.checkBookAvailability);
-router.put('/:id/status', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN), (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, bookController.updateBookStatus);
+router.put('/:id/status', middleware_1.authenticate, (0, middleware_1.authorize)(types_1.UserRole.ADMIN, types_1.UserRole.SUPERADMIN), (0, middleware_1.validateObjectId)('id'), middleware_1.handleValidationErrors, bookController.updateBookStatus);
 exports.default = router;
 //# sourceMappingURL=bookRoutes.js.map

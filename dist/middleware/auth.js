@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkOwnership = exports.optionalAuth = exports.authorize = exports.authenticate = void 0;
+exports.isAdmin = exports.isSuperAdmin = exports.checkOwnership = exports.optionalAuth = exports.authorize = exports.authenticate = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = require("../entities/User");
 const types_1 = require("../types");
@@ -87,7 +87,7 @@ const checkOwnership = (resourceUserIdField = 'userId') => {
         if (!req.user) {
             return next(new types_1.AppError('You are not logged in! Please log in to get access.', 401));
         }
-        if (req.user.role === types_1.UserRole.ADMIN) {
+        if (req.user.role === types_1.UserRole.ADMIN || req.user.role === types_1.UserRole.SUPERADMIN) {
             return next();
         }
         const resourceUserId = req.params[resourceUserIdField] || req.body[resourceUserIdField];
@@ -98,4 +98,12 @@ const checkOwnership = (resourceUserIdField = 'userId') => {
     };
 };
 exports.checkOwnership = checkOwnership;
+const isSuperAdmin = (req) => {
+    return req.user?.role === types_1.UserRole.SUPERADMIN;
+};
+exports.isSuperAdmin = isSuperAdmin;
+const isAdmin = (req) => {
+    return req.user?.role === types_1.UserRole.ADMIN || req.user?.role === types_1.UserRole.SUPERADMIN;
+};
+exports.isAdmin = isAdmin;
 //# sourceMappingURL=auth.js.map

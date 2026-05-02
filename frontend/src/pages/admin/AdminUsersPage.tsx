@@ -21,10 +21,16 @@ import {
   CheckIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { StarIcon } from '@heroicons/react/24/solid';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { userService,User,RawBorrowingRecord,BorrowingApiResponse,BookingRequest,BorrowedBook } from '../../services/adminUserService';
+import RoleBadge from '../../components/common/RoleBadge';
 
 const AdminUsersPage: React.FC = () => {
+  const { user: currentUser } = useAuth();
+  const isSuperAdmin = currentUser?.role === 'superadmin';
+  
   // State management
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -387,6 +393,64 @@ const handleReturnBook = async (borrowingId: string) => {
 };
 
   /**
+   * Promote user to admin (SUPERADMIN only)
+   */
+  const handlePromoteToAdmin = async (userId: string) => {
+    try {
+      const response = await userService.promoteUserToAdmin(userId);
+      if (response.success) {
+        toast.success('User promoted to admin successfully!');
+        fetchUsers();
+      } else {
+        throw new Error(response.message || 'Failed to promote user');
+      }
+    } catch (error) {
+      console.error('Failed to promote user:', error);
+      toast.error(`Failed to promote user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  /**
+   * Demote admin to user (SUPERADMIN only)
+   */
+  const handleDemoteToUser = async (userId: string) => {
+    try {
+      const response = await userService.demoteAdminToUser(userId);
+      if (response.success) {
+        toast.success('Admin demoted to user successfully!');
+        fetchUsers();
+      } else {
+        throw new Error(response.message || 'Failed to demote admin');
+      }
+    } catch (error) {
+      console.error('Failed to demote admin:', error);
+      toast.error(`Failed to demote admin: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  /**
+   * Promote admin to superadmin (SUPERADMIN only)
+   */
+  const handlePromoteToSuperAdmin = async (userId: string) => {
+    if (!window.confirm('Are you sure you want to promote this admin to SUPERADMIN? This action grants full system access.')) {
+      return;
+    }
+    
+    try {
+      const response = await userService.promoteAdminToSuperAdmin(userId);
+      if (response.success) {
+        toast.success('Admin promoted to superadmin successfully!');
+        fetchUsers();
+      } else {
+        throw new Error(response.message || 'Failed to promote admin');
+      }
+    } catch (error) {
+      console.error('Failed to promote admin to superadmin:', error);
+      toast.error(`Failed to promote admin: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  /**
    * Get status color classes for user status badges
    */
   const getStatusColor = (status: User['status']) => {
@@ -422,7 +486,9 @@ const handleReturnBook = async (borrowingId: string) => {
    * Get role icon for user role display
    */
   const getRoleIcon = (role: User['role']) => {
-    return role === 'admin' ? ShieldCheckIcon : UserIcon;
+    if (role === 'superadmin') return StarIcon;
+    if (role === 'admin') return ShieldCheckIcon;
+    return UserIcon;
   };
 
   /**
@@ -1161,13 +1227,15 @@ const EditUserModal: React.FC<{
             Manage library users and their permissions
           </p>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="btn-primary flex items-center"
-        >
-          <PlusIcon className="w-5 h-5 mr-2" />
-          Add New Admin
-        </button>
+        {isSuperAdmin && (
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="btn-primary flex items-center"
+          >
+            <PlusIcon className="w-5 h-5 mr-2" />
+            Add New Admin
+          </button>
+        )}
       </div>
 
       {/* Stats Cards */}
@@ -1455,27 +1523,49 @@ const EditUserModal: React.FC<{
                                   {user.clearanceStatus === 'pending' && <ClockIcon className="w-5 h-5" />}
                                   {user.clearanceStatus === 'clear' && <CheckCircleIcon className="w-5 h-5" />}
                                 </button>
-                                <button
-                                  onClick={() => handleEditUser(user)}
-                                  className="text-neutral-600 dark:text-neutral-400 hover:text-warning-600 dark:hover:text-warning-400 transition-colors duration-200"
-                                  title="Edit User"
-                                >
-                                  <PencilIcon className="w-5 h-5" />
-                                </button>
-                                <button
-                                  onClick={() => handleResetPassword(user)}
-                                  className="text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-                                  title="Reset Password"
-                                >
-                                  <ShieldExclamationIcon className="w-5 h-5" />
-                                </button>
-                                <button
-                                  onClick={() => setDeleteConfirmId(user.id)}
-                                  className="text-neutral-600 dark:text-neutral-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-200"
-                                  title="Delete User"
-                                >
-                                  <TrashIcon className="w-5 h-5" />
-                                </button>
+                                {/* Only allow password reset for non-SUPERADMIN users */}
+                                {user.role !== 'superadmin' && (
+                                  <button
+                                    onClick={() => handleResetPassword(user)}
+                                    className="text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                    title="Reset Password"
+                                  >
+                                    <ShieldExclamationIcon className="w-5 h-5" />
+                                  </button>
+                                )}
+                                {/* SUPERADMIN only: Promote/Demote buttons */}
+                                {isSuperAdmin && (
+                                  <>
+                                    {user.role === 'admin' && (
+                                      <>
+                                        <button
+                                          onClick={() => handlePromoteToSuperAdmin(user.id)}
+                                          className="text-neutral-600 dark:text-neutral-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200"
+                                          title="Promote to Super Admin"
+                                        >
+                                          <StarIcon className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                          onClick={() => handleDemoteToUser(user.id)}
+                                          className="text-neutral-600 dark:text-neutral-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200"
+                                          title="Demote to User"
+                                        >
+                                          <UserIcon className="w-5 h-5" />
+                                        </button>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                                {/* Only allow deleting non-SUPERADMIN users */}
+                                {user.role !== 'superadmin' && (
+                                  <button
+                                    onClick={() => setDeleteConfirmId(user.id)}
+                                    className="text-neutral-600 dark:text-neutral-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-200"
+                                    title="Delete User"
+                                  >
+                                    <TrashIcon className="w-5 h-5" />
+                                  </button>
+                                )}
                               </>
                             )}
                           </div>

@@ -59,7 +59,7 @@ class SocketManager {
             if (socket.userId) {
                 this.connectedUsers.set(socket.userId, socket.id);
                 socket.join(`user:${socket.userId}`);
-                if (socket.userRole === 'admin') {
+                if (socket.userRole === 'admin' || socket.userRole === 'superadmin') {
                     socket.join('admin');
                 }
             }

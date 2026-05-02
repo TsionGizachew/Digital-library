@@ -316,8 +316,8 @@ export class BookingService {
       throw new AppError('Booking not found', 404);
     }
 
-    // Admin can access any booking
-    if (userRole === 'admin') {
+    // Admin or SUPERADMIN can access any booking
+    if (userRole === 'admin' || userRole === 'superadmin') {
       return;
     }
 

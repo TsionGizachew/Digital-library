@@ -311,7 +311,7 @@ router.post(
  *       403:
  *         description: Forbidden
  */
-router.get('/', authorize(UserRole.ADMIN), validatePaginationQuery, userController.getAllUsers);
+router.get('/', authorize(UserRole.ADMIN, UserRole.SUPERADMIN), validatePaginationQuery, userController.getAllUsers);
 
 /**
  * @swagger
@@ -335,7 +335,7 @@ router.get('/', authorize(UserRole.ADMIN), validatePaginationQuery, userControll
  *       403:
  *         description: Forbidden
  */
-router.get('/search', authorize(UserRole.ADMIN), validatePaginationQuery, userController.searchUsers);
+router.get('/search', authorize(UserRole.ADMIN, UserRole.SUPERADMIN), validatePaginationQuery, userController.searchUsers);
 
 /**
  * @swagger
@@ -353,7 +353,7 @@ router.get('/search', authorize(UserRole.ADMIN), validatePaginationQuery, userCo
  *       403:
  *         description: Forbidden
  */
-router.get('/stats', authorize(UserRole.ADMIN), userController.getUserStats);
+router.get('/stats', authorize(UserRole.ADMIN, UserRole.SUPERADMIN), userController.getUserStats);
 
 /**
  * @swagger

@@ -6,7 +6,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'superadmin';
   status: 'active' | 'suspended' | 'pending';
   membershipType: 'basic' | 'premium' | 'student';
   joinDate: string;
@@ -137,5 +137,17 @@ export const userService = {
 
   async resetUserPassword(userId: string, newPassword: string): Promise<ApiResponse<any>> {
     return apiService.put(`/admin/users/${userId}/reset-password`, { newPassword });
+  },
+
+  async promoteUserToAdmin(userId: string): Promise<ApiResponse<User>> {
+    return apiService.put<User>(`/admin/users/${userId}/promote`);
+  },
+
+  async demoteAdminToUser(userId: string): Promise<ApiResponse<User>> {
+    return apiService.put<User>(`/admin/users/${userId}/demote`);
+  },
+
+  async promoteAdminToSuperAdmin(userId: string): Promise<ApiResponse<User>> {
+    return apiService.put<User>(`/admin/users/${userId}/promote-superadmin`);
   },
 }

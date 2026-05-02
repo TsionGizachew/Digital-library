@@ -208,8 +208,8 @@ export class UserService {
   }
 
   async validateUserAccess(userId: string, requestingUserId: string, requestingUserRole: UserRole): Promise<void> {
-    // Admin can access any user
-    if (requestingUserRole === UserRole.ADMIN) {
+    // Admin or SUPERADMIN can access any user
+    if (requestingUserRole === UserRole.ADMIN || requestingUserRole === UserRole.SUPERADMIN) {
       return;
     }
 

@@ -107,8 +107,8 @@ export const checkOwnership = (resourceUserIdField: string = 'userId') => {
       return next(new AppError('You are not logged in! Please log in to get access.', 401));
     }
 
-    // Admin can access any resource
-    if (req.user.role === UserRole.ADMIN) {
+    // Admin or SUPERADMIN can access any resource
+    if (req.user.role === UserRole.ADMIN || req.user.role === UserRole.SUPERADMIN) {
       return next();
     }
 
@@ -121,4 +121,18 @@ export const checkOwnership = (resourceUserIdField: string = 'userId') => {
 
     next();
   };
+};
+
+/**
+ * Helper function to check if user is SUPERADMIN
+ */
+export const isSuperAdmin = (req: Request): boolean => {
+  return req.user?.role === UserRole.SUPERADMIN;
+};
+
+/**
+ * Helper function to check if user is ADMIN or SUPERADMIN
+ */
+export const isAdmin = (req: Request): boolean => {
+  return req.user?.role === UserRole.ADMIN || req.user?.role === UserRole.SUPERADMIN;
 };

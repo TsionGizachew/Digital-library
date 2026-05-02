@@ -4,7 +4,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'superadmin';
   status: 'active' | 'blocked' | 'pending';
   phoneNumber?: string;
   address?: string;
@@ -181,10 +181,16 @@ export const authService = {
     return !!(token && user);
   },
 
-  // Check if user is admin
+  // Check if user is admin or superadmin
   isAdmin(): boolean {
     const user = this.getStoredUser();
-    return user?.role === 'admin';
+    return user?.role === 'admin' || user?.role === 'superadmin';
+  },
+
+  // Check if user is superadmin
+  isSuperAdmin(): boolean {
+    const user = this.getStoredUser();
+    return user?.role === 'superadmin';
   },
 
   // Check if user account is active

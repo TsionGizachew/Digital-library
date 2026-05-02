@@ -129,7 +129,7 @@ router.get('/my/history', validatePaginationQuery, bookingController.getUserBook
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/stats', authorize(UserRole.ADMIN), bookingController.getBookingStats);
+router.get('/stats', authorize(UserRole.ADMIN, UserRole.SUPERADMIN), bookingController.getBookingStats);
 
 /**
  * @swagger
@@ -147,7 +147,7 @@ router.get('/stats', authorize(UserRole.ADMIN), bookingController.getBookingStat
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/pending', authorize(UserRole.ADMIN), validatePaginationQuery, bookingController.getPendingBookings);
+router.get('/pending', authorize(UserRole.ADMIN, UserRole.SUPERADMIN), validatePaginationQuery, bookingController.getPendingBookings);
 
 /**
  * @swagger
@@ -165,7 +165,7 @@ router.get('/pending', authorize(UserRole.ADMIN), validatePaginationQuery, booki
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/overdue', authorize(UserRole.ADMIN), validatePaginationQuery, bookingController.getOverdueBookings);
+router.get('/overdue', authorize(UserRole.ADMIN, UserRole.SUPERADMIN), validatePaginationQuery, bookingController.getOverdueBookings);
 
 /**
  * @swagger
@@ -268,7 +268,7 @@ router.put('/update-overdue', authorize(UserRole.ADMIN), bookingController.updat
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.get('/', authorize(UserRole.ADMIN), validatePaginationQuery, bookingController.getAllBookings);
+router.get('/', authorize(UserRole.ADMIN, UserRole.SUPERADMIN), validatePaginationQuery, bookingController.getAllBookings);
 
 /**
  * @swagger

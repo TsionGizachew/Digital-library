@@ -158,6 +158,19 @@ class AdminService {
         }
         return await this.userRepository.update(userId, { role: types_1.UserRole.USER });
     }
+    async promoteAdminToSuperAdmin(userId) {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new types_1.AppError('User not found', 404);
+        }
+        if (user.role === types_1.UserRole.SUPERADMIN) {
+            throw new types_1.AppError('User is already a superadmin', 400);
+        }
+        if (user.role !== types_1.UserRole.ADMIN) {
+            throw new types_1.AppError('Only admins can be promoted to superadmin', 400);
+        }
+        return await this.userRepository.update(userId, { role: types_1.UserRole.SUPERADMIN });
+    }
     async bulkUpdateBookStatus(bookIds, status) {
         const updatePromises = bookIds.map(id => this.bookService.updateBookStatus(id, status));
         await Promise.all(updatePromises);

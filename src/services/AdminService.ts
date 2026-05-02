@@ -224,6 +224,23 @@ export class AdminService {
     return await this.userRepository.update(userId, { role: UserRole.USER });
   }
 
+  async promoteAdminToSuperAdmin(userId: string): Promise<any> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    if (user.role === UserRole.SUPERADMIN) {
+      throw new AppError('User is already a superadmin', 400);
+    }
+
+    if (user.role !== UserRole.ADMIN) {
+      throw new AppError('Only admins can be promoted to superadmin', 400);
+    }
+
+    return await this.userRepository.update(userId, { role: UserRole.SUPERADMIN });
+  }
+
   async bulkUpdateBookStatus(bookIds: string[], status: BookStatus): Promise<void> {
     const updatePromises = bookIds.map(id => 
       this.bookService.updateBookStatus(id, status)

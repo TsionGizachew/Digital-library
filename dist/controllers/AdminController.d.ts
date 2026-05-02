@@ -8,6 +8,7 @@ export declare class AdminController {
     getAllUsers: (req: Request, res: Response, next: import("express").NextFunction) => void;
     promoteUserToAdmin: (req: Request, res: Response, next: import("express").NextFunction) => void;
     demoteAdminToUser: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    promoteAdminToSuperAdmin: (req: Request, res: Response, next: import("express").NextFunction) => void;
     blockUser: (req: Request, res: Response, next: import("express").NextFunction) => void;
     unblockUser: (req: Request, res: Response, next: import("express").NextFunction) => void;
     getUserBorrowingHistory: (req: Request, res: Response, next: import("express").NextFunction) => void;

@@ -165,7 +165,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                               <UserCircleIcon className="w-4 h-4 mr-3" />
                               Dashboard
                             </Link>
-                            {user?.role === 'admin' && (
+                            {(user?.role === 'admin' || user?.role === 'superadmin') && (
                               <Link
                                 to="/admin"
                                 className="flex items-center px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700"
@@ -265,7 +265,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                     >
                       Dashboard
                     </Link>
-                    {user?.role === 'admin' && (
+                    {(user?.role === 'admin' || user?.role === 'superadmin') && (
                       <Link
                         to="/admin"
                         className="w-full btn-outline text-sm"

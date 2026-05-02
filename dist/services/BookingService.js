@@ -220,7 +220,7 @@ class BookingService {
         if (!booking) {
             throw new types_1.AppError('Booking not found', 404);
         }
-        if (userRole === 'admin') {
+        if (userRole === 'admin' || userRole === 'superadmin') {
             return;
         }
         if (booking.userId.toString() !== userId) {

@@ -50,6 +50,7 @@ export declare class AdminService {
     getBorrowingRecords(query: any): Promise<any>;
     promoteUserToAdmin(userId: string): Promise<any>;
     demoteAdminToUser(userId: string): Promise<any>;
+    promoteAdminToSuperAdmin(userId: string): Promise<any>;
     bulkUpdateBookStatus(bookIds: string[], status: BookStatus): Promise<void>;
     bulkUpdateUserStatus(userIds: string[], status: UserStatus): Promise<void>;
     getSystemHealth(): Promise<{

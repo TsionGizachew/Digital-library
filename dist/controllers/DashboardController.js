@@ -21,7 +21,7 @@ class DashboardController {
             if (!user) {
                 return next(new AppError_1.default('User not authenticated', 401));
             }
-            if (user.role === types_1.UserRole.ADMIN) {
+            if (user.role === types_1.UserRole.ADMIN || user.role === types_1.UserRole.SUPERADMIN) {
                 const result = await this.adminService.getDashboardStats();
                 const stats = {
                     totalMembers: result.users.total,
@@ -209,7 +209,7 @@ class DashboardController {
         });
         this.getChartsData = (0, errorHandler_1.catchAsync)(async (req, res, next) => {
             const user = req.user;
-            if (!user || user.role !== types_1.UserRole.ADMIN) {
+            if (!user || (user.role !== types_1.UserRole.ADMIN && user.role !== types_1.UserRole.SUPERADMIN)) {
                 return next(new AppError_1.default('Unauthorized', 403));
             }
             const chartsData = await this.adminService.getDashboardChartsData();
@@ -217,7 +217,7 @@ class DashboardController {
         });
         this.generateReport = (0, errorHandler_1.catchAsync)(async (req, res, next) => {
             const user = req.user;
-            if (!user || user.role !== types_1.UserRole.ADMIN) {
+            if (!user || (user.role !== types_1.UserRole.ADMIN && user.role !== types_1.UserRole.SUPERADMIN)) {
                 return next(new AppError_1.default('Unauthorized', 403));
             }
             await this.reportService.generateLibraryReport(res);

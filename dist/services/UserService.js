@@ -140,7 +140,7 @@ class UserService {
         return this.updateUserPreferences(id, { favoriteCategories });
     }
     async validateUserAccess(userId, requestingUserId, requestingUserRole) {
-        if (requestingUserRole === types_1.UserRole.ADMIN) {
+        if (requestingUserRole === types_1.UserRole.ADMIN || requestingUserRole === types_1.UserRole.SUPERADMIN) {
             return;
         }
         if (userId !== requestingUserId) {
