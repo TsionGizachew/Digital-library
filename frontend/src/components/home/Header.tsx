@@ -46,6 +46,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
     e.preventDefault();
     if (onSearch && searchQuery.trim()) {
       onSearch(searchQuery.trim());
+      setSearchQuery(''); // Clear search after submitting
     }
   };
 

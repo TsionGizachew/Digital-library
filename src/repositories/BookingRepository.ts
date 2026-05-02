@@ -225,15 +225,22 @@ export class BookingRepository {
     ]);
   }
 
-  public async findBookingsDueSoon(days: number) {
+  public async findBookingsDueSoon(days: number, userId?: string) {
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + days);
 
+    const query: any = {
+      status: BookingStatus.APPROVED,
+      dueDate: { $lte: dueDate },
+    };
+
+    // If userId is provided, filter by user
+    if (userId) {
+      query.user = userId;
+    }
+
     return await (Booking as any)
-      .find({
-        status: BookingStatus.APPROVED,
-        dueDate: { $lte: dueDate },
-      })
+      .find(query)
       .populate('user', 'name email')
       .populate('book', 'title');
   }

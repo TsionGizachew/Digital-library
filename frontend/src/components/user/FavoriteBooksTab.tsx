@@ -5,11 +5,13 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 interface FavoriteBooksTabProps {
   favoriteBooks: Book[];
   toggleFavorite: (bookId: string) => void;
+  togglingFavorites?: Set<string>;
 }
 
 const FavoriteBooksTab: React.FC<FavoriteBooksTabProps> = ({
   favoriteBooks,
   toggleFavorite,
+  togglingFavorites = new Set(),
 }) => {
 
   return (
@@ -32,10 +34,15 @@ const FavoriteBooksTab: React.FC<FavoriteBooksTabProps> = ({
               {/* Remove from Favorites Button - Always show filled heart since we're in favorites tab */}
               <button
                 onClick={() => toggleFavorite(book.id)}
-                className="absolute top-3 right-3 z-10 p-2.5 rounded-full bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm text-red-500 hover:text-red-600 hover:scale-110 transition-all duration-200 shadow-lg"
+                disabled={togglingFavorites.has(book.id)}
+                className="absolute top-3 right-3 z-10 p-2.5 rounded-full bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm text-red-500 hover:text-red-600 hover:scale-110 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Remove from favorites"
               >
-                <FaHeart className="w-5 h-5" />
+                {togglingFavorites.has(book.id) ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
+                ) : (
+                  <FaHeart className="w-5 h-5" />
+                )}
               </button>
               
               {/* Book Cover */}

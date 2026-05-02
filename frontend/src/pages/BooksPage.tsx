@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   MagnifyingGlassIcon,
@@ -11,10 +12,12 @@ import {
 } from '@heroicons/react/24/outline';
 import Header from '../components/home/Header';
 import Footer from '../components/common/Footer';
+import BookDetailModal from '../components/home/BookDetailModal';
 import { useLanguage } from '../contexts/LanguageContext';
 import { bookService, Book, BookQuery } from '../services/bookService';
 
 const BooksPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -22,12 +25,14 @@ const BooksPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const [filters, setFilters] = useState<BookQuery>({
     page: 1,
-    limit: 12, // A sufficiently large number to fetch all books
-    search: '',
-    category: '',
+    limit: 12,
+    search: searchParams.get('search') || '',
+    category: searchParams.get('category') || '',
     sortBy: 'title',
     sortOrder: 'asc',
   });
@@ -72,6 +77,15 @@ const BooksPage: React.FC = () => {
       search: searchTerm,
       page: 1,
     }));
+    
+    // Update URL params
+    const params = new URLSearchParams(searchParams);
+    if (searchTerm) {
+      params.set('search', searchTerm);
+    } else {
+      params.delete('search');
+    }
+    setSearchParams(params);
   };
 
   const handleFilterChange = (key: keyof BookQuery, value: any) => {
@@ -80,6 +94,25 @@ const BooksPage: React.FC = () => {
       [key]: value,
       page: 1,
     }));
+    
+    // Update URL params
+    const params = new URLSearchParams(searchParams);
+    if (value && key === 'category') {
+      params.set('category', value);
+    } else if (key === 'category') {
+      params.delete('category');
+    }
+    setSearchParams(params);
+  };
+
+  const handleBookClick = (book: Book) => {
+    setSelectedBook(book);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBook(null);
   };
 
   const handlePageChange = (page: number) => {
@@ -296,6 +329,7 @@ const BooksPage: React.FC = () => {
                 <motion.div
                   key={book.id}
                   variants={itemVariants}
+                  onClick={() => handleBookClick(book)}
                   className={`group cursor-pointer ${
                     viewMode === 'grid' ? 'card-hover' : 'card-hover flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-3 sm:p-4'
                   }`}
@@ -307,7 +341,7 @@ const BooksPage: React.FC = () => {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      // Handle book selection
+                      handleBookClick(book);
                     }
                   }}
                 >
@@ -463,6 +497,13 @@ const BooksPage: React.FC = () => {
       </main>
 
       <Footer />
+      
+      {/* Book Detail Modal */}
+      <BookDetailModal
+        book={selectedBook}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

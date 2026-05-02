@@ -8,9 +8,10 @@ import { userDashboardService } from '../../services/userDashboardService';
 interface BooksTabProps {
   favoriteBookIds: string[];
   toggleFavorite: (bookId: string) => void;
+  togglingFavorites?: Set<string>;
 }
 
-const BooksTab: React.FC<BooksTabProps> = ({ favoriteBookIds, toggleFavorite }) => {
+const BooksTab: React.FC<BooksTabProps> = ({ favoriteBookIds, toggleFavorite, togglingFavorites = new Set() }) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -124,9 +125,12 @@ const BooksTab: React.FC<BooksTabProps> = ({ favoriteBookIds, toggleFavorite }) 
               )}
               <button
                 onClick={() => toggleFavorite(book.id)}
-                className="absolute top-2 right-2 btn-icon bg-white/70 hover:bg-white"
+                disabled={togglingFavorites.has(book.id)}
+                className="absolute top-2 right-2 btn-icon bg-white/70 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {favoriteBookIds.includes(book.id) ? (
+                {togglingFavorites.has(book.id) ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
+                ) : favoriteBookIds.includes(book.id) ? (
                   <FaHeart className="text-red-500" />
                 ) : (
                   <FaRegHeart className="text-gray-600" />

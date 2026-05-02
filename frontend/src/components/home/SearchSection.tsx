@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MagnifyingGlassIcon, FunnelIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { bookService } from '../../services/bookService';
 
 interface SearchSectionProps {
   onSearch?: (query: string, category: string) => void;
@@ -10,18 +11,28 @@ interface SearchSectionProps {
 const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [categories, setCategories] = useState<string[]>([]);
   const { t } = useLanguage();
 
-  const categories = [
-    { id: 'all',        name: t('home.search.categories.all') },
-    { id: 'fiction',    name: t('home.search.categories.fiction') },
-    { id: 'nonfiction', name: t('home.search.categories.nonfiction') },
-    { id: 'science',    name: t('home.search.categories.science') },
-    { id: 'history',    name: t('home.search.categories.history') },
-    { id: 'biography',  name: t('home.search.categories.biography') },
-    { id: 'children',   name: t('home.search.categories.children') },
-    { id: 'academic',   name: t('home.search.categories.academic') },
-    { id: 'reference',  name: t('home.search.categories.reference') },
+  // Fetch real categories from backend
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await bookService.getCategories();
+        setCategories(response.data || []);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        // Fallback to default categories
+        setCategories(['Fiction', 'Non-Fiction', 'Science', 'History', 'Biography']);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const categoryOptions = [
+    { id: 'all', name: t('home.search.categories.all') },
+    ...categories.map(cat => ({ id: cat, name: cat }))
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -92,7 +103,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="appearance-none bg-neutral-50 dark:bg-neutral-700 border-0 rounded-xl px-4 py-3.5 pr-10 text-neutral-700 dark:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200 cursor-pointer min-w-[180px] text-sm font-medium"
                 >
-                  {categories.map((c) => (
+                  {categoryOptions.map((c) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>
@@ -113,7 +124,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
 
           {/* Category Pills */}
           <motion.div variants={itemVariants} className="mt-6 flex flex-wrap justify-center gap-2">
-            {categories.slice(1, 7).map((category) => (
+            {categoryOptions.slice(1, 7).map((category) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}

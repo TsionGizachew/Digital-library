@@ -206,8 +206,8 @@ class BookingService {
     async getPopularBooks(query) {
         return await this.bookingRepository.getPopularBooks(query);
     }
-    async getBookingsDueSoon(days = 3) {
-        return await this.bookingRepository.findBookingsDueSoon(days);
+    async getBookingsDueSoon(days = 3, userId) {
+        return await this.bookingRepository.findBookingsDueSoon(days, userId);
     }
     async getRecentUserBookings(userId, days = 3) {
         return await this.bookingRepository.findRecentUserBookings(userId, days);

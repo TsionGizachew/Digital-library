@@ -70,7 +70,7 @@ export class DashboardController {
       const readingHistory = await this.bookingService.getUserBookings(user.id, {
         status: BookingStatus.RETURNED,
       });
-      const dueSoonNotifications = await this.bookingService.getBookingsDueSoon(3);
+      const dueSoonNotifications = await this.bookingService.getBookingsDueSoon(3, user.id);
       const recentBookings = await this.bookingService.getRecentUserBookings(user.id, 3);
 
       const notifications = [
@@ -152,8 +152,8 @@ export class DashboardController {
       return next(new AppError('User not authenticated', 401));
     }
 
-    // Get booking-related notifications
-    const dueSoonBookings = await this.bookingService.getBookingsDueSoon(3);
+    // Get booking-related notifications for THIS user only
+    const dueSoonBookings = await this.bookingService.getBookingsDueSoon(3, userId);
     const bookingNotifications = dueSoonBookings.map((b: any) => ({
       id: `booking-${b._id}`,
       type: 'due_soon',

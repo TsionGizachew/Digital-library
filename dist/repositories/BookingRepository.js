@@ -189,14 +189,18 @@ class BookingRepository {
             },
         ]);
     }
-    async findBookingsDueSoon(days) {
+    async findBookingsDueSoon(days, userId) {
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + days);
-        return await Booking_1.Booking
-            .find({
+        const query = {
             status: types_1.BookingStatus.APPROVED,
             dueDate: { $lte: dueDate },
-        })
+        };
+        if (userId) {
+            query.user = userId;
+        }
+        return await Booking_1.Booking
+            .find(query)
             .populate('user', 'name email')
             .populate('book', 'title');
     }

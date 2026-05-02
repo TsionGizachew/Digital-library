@@ -4,10 +4,13 @@ import { ChevronLeftIcon, ChevronRightIcon, StarIcon, HeartIcon } from '@heroico
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { getFeaturedBooks, Book } from '../../services/bookService';
+import BookDetailModal from './BookDetailModal';
 
 const FeaturedBooks: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useLanguage();
   const [books, setBooks] = useState<Book[]>([]);
   const [activeTab, setActiveTab] = useState('popular');
@@ -53,6 +56,16 @@ const FeaturedBooks: React.FC = () => {
       }
       return newFavorites;
     });
+  };
+
+  const handleBookClick = (book: Book) => {
+    setSelectedBook(book);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBook(null);
   };
 
   const renderStars = (rating?: { average: number; count: number }) => {
@@ -185,6 +198,7 @@ const FeaturedBooks: React.FC = () => {
                       .map((book) => (
                         <motion.div
                           key={book.id}
+                          onClick={() => handleBookClick(book)}
                           className="group cursor-pointer"
                           whileHover={{ y: -5 }}
                           transition={{ duration: 0.2 }}
@@ -278,6 +292,13 @@ const FeaturedBooks: React.FC = () => {
           </motion.div>
         </motion.div>
       </div>
+      
+      {/* Book Detail Modal */}
+      <BookDetailModal
+        book={selectedBook}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </section>
   );
 };

@@ -107,7 +107,7 @@ export declare class BookingService {
         };
     }>;
     getPopularBooks(query: PaginationQuery): Promise<any>;
-    getBookingsDueSoon(days?: number): Promise<any>;
+    getBookingsDueSoon(days?: number, userId?: string): Promise<any>;
     getRecentUserBookings(userId: string, days?: number): Promise<any>;
     updateOverdueBookings(): Promise<number>;
     validateUserBookingAccess(bookingId: string, userId: string, userRole: string): Promise<void>;

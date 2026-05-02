@@ -50,6 +50,7 @@ const UserDashboard: React.FC = () => {
   const [favoriteBooks, setFavoriteBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [togglingFavorites, setTogglingFavorites] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -146,32 +147,64 @@ const UserDashboard: React.FC = () => {
   };
 
   const toggleFavorite = async (bookId: string) => {
+    // Prevent multiple simultaneous toggles for the same book
+    if (togglingFavorites.has(bookId)) {
+      console.log('[UserDashboard] Already toggling favorite for book:', bookId);
+      return;
+    }
+
     try {
-      console.log('[UserDashboard] Toggling favorite for book:', bookId);
+      console.log('[UserDashboard] ===== TOGGLE FAVORITE START =====');
+      console.log('[UserDashboard] Book ID:', bookId);
+      console.log('[UserDashboard] Current favorite books:', favoriteBooks.map(b => ({ id: b.id, _id: b._id, title: b.title })));
       
-      // Optimistically update UI
-      const isFavorite = favoriteBooks.some(book => book.id === bookId);
+      // Mark this book as being toggled
+      setTogglingFavorites(prev => new Set(prev).add(bookId));
+      
+      // Check if book is currently in favorites (check both id and _id)
+      const isFavorite = favoriteBooks.some(book => book.id === bookId || book._id === bookId);
+      console.log('[UserDashboard] Is currently favorite?', isFavorite);
       
       if (isFavorite) {
-        // Remove from favorites
-        setFavoriteBooks(prev => prev.filter(book => book.id !== bookId));
+        console.log('[UserDashboard] Optimistically removing from favorites...');
+        // Remove from favorites (check both id and _id)
+        setFavoriteBooks(prev => prev.filter(book => book.id !== bookId && book._id !== bookId));
       } else {
-        // We'll refetch to get the complete book data
+        console.log('[UserDashboard] Will add to favorites (refetch after API call)');
       }
       
       // Call API
+      console.log('[UserDashboard] Calling API: POST /users/books/' + bookId + '/favorite');
       const response = await userDashboardService.toggleFavorite(bookId);
-      console.log('[UserDashboard] Toggle favorite response:', response);
+      console.log('[UserDashboard] API Response:', JSON.stringify(response, null, 2));
       
       // Refetch favorite books to ensure consistency
+      console.log('[UserDashboard] Refetching favorite books...');
       const { data: favoriteBooksDetails } = await userDashboardService.getFavoriteBooks();
-      console.log('[UserDashboard] Refetched favorites:', favoriteBooksDetails);
+      console.log('[UserDashboard] Refetched favorites count:', favoriteBooksDetails?.length);
+      console.log('[UserDashboard] Refetched favorites:', favoriteBooksDetails?.map(b => ({ id: b.id, _id: b._id, title: b.title })));
       setFavoriteBooks(favoriteBooksDetails || []);
-    } catch (err) {
-      console.error('[UserDashboard] Failed to toggle favorite status', err);
+      console.log('[UserDashboard] ===== TOGGLE FAVORITE SUCCESS =====');
+    } catch (err: any) {
+      console.error('[UserDashboard] ===== TOGGLE FAVORITE ERROR =====');
+      console.error('[UserDashboard] Error:', err);
+      console.error('[UserDashboard] Error message:', err?.message);
+      console.error('[UserDashboard] Error response:', err?.response?.data);
       // Revert optimistic update by refetching
-      const { data: favoriteBooksDetails } = await userDashboardService.getFavoriteBooks();
-      setFavoriteBooks(favoriteBooksDetails || []);
+      try {
+        const { data: favoriteBooksDetails } = await userDashboardService.getFavoriteBooks();
+        setFavoriteBooks(favoriteBooksDetails || []);
+      } catch (refetchErr) {
+        console.error('[UserDashboard] Failed to refetch favorites:', refetchErr);
+      }
+    } finally {
+      // Remove the book from the toggling set
+      setTogglingFavorites(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(bookId);
+        return newSet;
+      });
+      console.log('[UserDashboard] ===== TOGGLE FAVORITE END =====');
     }
   };
 
@@ -469,14 +502,16 @@ const UserDashboard: React.FC = () => {
                 {activeTab === 'profile' && <ProfileTab />}
                 {activeTab === 'books' && (
                   <BooksTab
-                    favoriteBookIds={favoriteBooks.map(book => book.id)}
+                    favoriteBookIds={favoriteBooks.map(book => book.id || book._id || '')}
                     toggleFavorite={toggleFavorite}
+                    togglingFavorites={togglingFavorites}
                   />
                 )}
                 {activeTab === 'favorites' && (
                   <FavoriteBooksTab
                     favoriteBooks={favoriteBooks}
                     toggleFavorite={toggleFavorite}
+                    togglingFavorites={togglingFavorites}
                   />
                 )}
               </div>

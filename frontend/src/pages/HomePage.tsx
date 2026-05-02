@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/home/Header';
 import HeroSection from '../components/home/HeroSection';
 import LibraryHeadSection from '../components/home/LibraryHeadSection';
@@ -11,10 +12,15 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const HomePage: React.FC = () => {
   const { language } = useLanguage();
+  const navigate = useNavigate();
   
   const handleSearch = (query: string, category?: string) => {
-    console.log('Search:', query, 'Category:', category);
-    // Implement search functionality
+    // Navigate to books page with search parameters
+    const params = new URLSearchParams();
+    if (query) params.append('search', query);
+    if (category && category !== 'all') params.append('category', category);
+    
+    navigate(`/books?${params.toString()}`);
   };
 
   return (

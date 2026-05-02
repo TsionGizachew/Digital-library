@@ -298,8 +298,8 @@ export class BookingService {
     return await this.bookingRepository.getPopularBooks(query);
   }
 
-  async getBookingsDueSoon(days: number = 3) {
-    return await this.bookingRepository.findBookingsDueSoon(days);
+  async getBookingsDueSoon(days: number = 3, userId?: string) {
+    return await this.bookingRepository.findBookingsDueSoon(days, userId);
   }
 
   async getRecentUserBookings(userId: string, days: number = 3) {

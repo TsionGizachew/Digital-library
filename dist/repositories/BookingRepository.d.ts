@@ -90,7 +90,7 @@ export declare class BookingRepository {
         };
     }>;
     getPopularBooks(query: PaginationQuery): Promise<any>;
-    findBookingsDueSoon(days: number): Promise<any>;
+    findBookingsDueSoon(days: number, userId?: string): Promise<any>;
     findRecentUserBookings(userId: string, days: number): Promise<any>;
     updateOverdueBookings(): Promise<number>;
 }

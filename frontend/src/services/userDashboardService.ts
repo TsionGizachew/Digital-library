@@ -81,13 +81,19 @@ export const userDashboardService = {
   },
 
   async getFavoriteBooks(): Promise<ApiResponse<Book[]>> {
-    return apiRequest<Book[]>('/dashboard/favorite-books');
+    console.log('[userDashboardService] getFavoriteBooks called');
+    const response = await apiRequest<Book[]>('/dashboard/favorite-books');
+    console.log('[userDashboardService] getFavoriteBooks response:', response);
+    return response;
   },
 
   async toggleFavorite(bookId: string): Promise<ActionResponse> {
+    console.log('[userDashboardService] toggleFavorite called with bookId:', bookId);
+    console.log('[userDashboardService] Making POST request to:', `/users/books/${bookId}/favorite`);
     const response = await apiRequest<ActionResponse>(`/users/books/${bookId}/favorite`, {
       method: 'POST',
     });
+    console.log('[userDashboardService] toggleFavorite response:', response);
     return response;
   },
 
