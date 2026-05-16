@@ -11,10 +11,18 @@ console.log('🚀 Starting Simple Backend Server on port', PORT);
 
 // Middleware
 app.use(cors({
-  origin: '*',
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow all origins for now (you can restrict this later)
+    return callback(null, true);
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 86400 // 24 hours
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -42,6 +50,7 @@ const authenticateToken = (req, res, next) => {
   // For this demo, we'll accept the mock tokens from login
   const validTokens = [
     'mock-access-token-admin',
+    'mock-access-token-superadmin',
     'mock-access-token-user',
     'mock-access-token-new'
   ];
@@ -55,10 +64,17 @@ const authenticateToken = (req, res, next) => {
   }
 
   // Set user info based on token
-  if (token === 'mock-access-token-admin') {
+  if (token === 'mock-access-token-superadmin') {
+    req.user = {
+      id: '0',
+      email: 'superadmin@yekalibrary.gov.et',
+      role: 'superadmin',
+      name: 'Super Administrator'
+    };
+  } else if (token === 'mock-access-token-admin') {
     req.user = {
       id: '1',
-      email: 'admin@example.com',
+      email: 'admin@yekalibrary.gov.et',
       role: 'admin',
       name: 'Admin User'
     };
@@ -82,16 +98,16 @@ const authenticateToken = (req, res, next) => {
   next();
 };
 
-// Admin-only middleware
+// Admin-only middleware (allows both admin and superadmin)
 const requireAdmin = (req, res, next) => {
-  if (!req.user || req.user.role !== 'admin') {
+  if (!req.user || (req.user.role !== 'admin' && req.user.role !== 'superadmin')) {
     console.log('❌ Admin access required, user role:', req.user?.role);
     return res.status(403).json({
       success: false,
       message: 'Admin access required'
     });
   }
-  console.log('✅ Admin access granted');
+  console.log('✅ Admin access granted for role:', req.user.role);
   next();
 };
 
@@ -110,7 +126,29 @@ app.post('/api/v1/auth/login', (req, res) => {
   
   const { email, password } = req.body;
   
-  if (email === 'admin@yekalibrary.gov.et' && password === 'admin123') {
+  // Check for superadmin login
+  if (email === 'superadmin@yekalibrary.gov.et' && password === 'superadmin123') {
+    const response = {
+      success: true,
+      message: 'Login successful',
+      data: {
+        user: {
+          id: '0',
+          name: 'Super Administrator',
+          email: 'superadmin@yekalibrary.gov.et',
+          role: 'superadmin',
+          status: 'active',
+          joinDate: new Date().toISOString()
+        },
+        tokens: {
+          accessToken: 'mock-access-token-superadmin',
+          refreshToken: 'mock-refresh-token-superadmin'
+        }
+      }
+    };
+    console.log('✅ Super Admin login successful');
+    res.json(response);
+  } else if (email === 'admin@yekalibrary.gov.et' && password === 'admin123') {
     const response = {
       success: true,
       message: 'Login successful',
