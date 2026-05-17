@@ -1,17 +1,48 @@
 {
   "short_name": "Yeka Library",
-  "name": "Yeka Sub City Library",
-  "description": "Digital Library Management System for Yeka Sub City",
+  "name": "Yeka Sub City Library - Digital Library System",
+  "description": "Access thousands of books, digital resources, and educational programs at Yeka Sub City Library in Addis Ababa, Ethiopia. Your gateway to knowledge and lifelong learning.",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#C62828",
+  "theme_color": "#ef4444",
   "background_color": "#ffffff",
-  "orientation": "portrait-primary"
+  "orientation": "portrait-primary",
+  "categories": ["education", "books", "library"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/"
 }

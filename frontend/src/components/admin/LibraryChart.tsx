@@ -37,7 +37,8 @@ const LibraryChart: React.FC<LibraryChartProps> = ({ type, title }) => {
   useEffect(() => {
     const fetchChartData = async () => {
       try {
-        const response = await fetch('/api/v1/dashboard/charts', {
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+        const response = await fetch(`${API_BASE_URL}/dashboard/charts`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
         });
         const data = await response.json();
@@ -83,7 +84,8 @@ const LibraryChart: React.FC<LibraryChartProps> = ({ type, title }) => {
             });
           } else if (type === 'doughnut') {
             // Fetch book stats from overview
-            const overviewResponse = await fetch('/api/v1/dashboard/overview', {
+            const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+            const overviewResponse = await fetch(`${API_BASE_URL}/dashboard/overview`, {
               headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
             });
             const overviewData = await overviewResponse.json();

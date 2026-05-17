@@ -21,9 +21,19 @@ export class SocketManager {
     this.io = new SocketIOServer(httpServer, {
       cors: {
         origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-          if (!origin || allowedOrigins.includes(origin)) {
+          // Allow requests with no origin (like mobile apps or curl requests)
+          if (!origin) {
+            logger.info('Socket.IO: Allowing request with no origin');
+            return callback(null, true);
+          }
+          
+          // Check if origin is in allowed list
+          if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+            logger.info(`Socket.IO: Allowing origin: ${origin}`);
             callback(null, true);
           } else {
+            logger.warn(`Socket.IO: Rejecting origin: ${origin}`);
+            logger.warn(`Socket.IO: Allowed origins: ${allowedOrigins.join(', ')}`);
             callback(new Error('Not allowed by CORS'));
           }
         },
@@ -31,6 +41,9 @@ export class SocketManager {
         credentials: true,
       },
       transports: ['websocket', 'polling'],
+      allowEIO3: true, // Enable compatibility with older clients
+      pingTimeout: 60000, // Increase ping timeout for production
+      pingInterval: 25000, // Increase ping interval for production
     });
 
     this.setupMiddleware();

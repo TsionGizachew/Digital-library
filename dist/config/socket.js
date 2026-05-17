@@ -15,10 +15,17 @@ class SocketManager {
         this.io = new socket_io_1.Server(httpServer, {
             cors: {
                 origin: (origin, callback) => {
-                    if (!origin || allowedOrigins.includes(origin)) {
+                    if (!origin) {
+                        logger_1.logger.info('Socket.IO: Allowing request with no origin');
+                        return callback(null, true);
+                    }
+                    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+                        logger_1.logger.info(`Socket.IO: Allowing origin: ${origin}`);
                         callback(null, true);
                     }
                     else {
+                        logger_1.logger.warn(`Socket.IO: Rejecting origin: ${origin}`);
+                        logger_1.logger.warn(`Socket.IO: Allowed origins: ${allowedOrigins.join(', ')}`);
                         callback(new Error('Not allowed by CORS'));
                     }
                 },
@@ -26,6 +33,9 @@ class SocketManager {
                 credentials: true,
             },
             transports: ['websocket', 'polling'],
+            allowEIO3: true,
+            pingTimeout: 60000,
+            pingInterval: 25000,
         });
         this.setupMiddleware();
         this.setupEventHandlers();

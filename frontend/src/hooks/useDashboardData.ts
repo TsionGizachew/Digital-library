@@ -41,7 +41,8 @@ export const useDashboardData = (activeTab: TabType) => {
             setReservedBooks(reserved);
             break;
           case 'announcements':
-            const response = await fetch('/api/v1/admin/announcements');
+            const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+            const response = await fetch(`${API_BASE_URL}/admin/announcements`);
             const announcementsData = await response.json();
             console.log('📢 Announcements API Response:', announcementsData);
 

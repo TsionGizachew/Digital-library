@@ -49,7 +49,8 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('/api/v1/dashboard/overview', {
+        const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+        const response = await fetch(`${API_BASE_URL}/dashboard/overview`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
         });
         const data = await response.json();
@@ -58,7 +59,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           setRecentActivity(data.data?.recentActivity || []);
           
           // Fetch stats with changes
-          const statsResponse = await fetch('/api/v1/admin/dashboard', {
+          const statsResponse = await fetch(`${API_BASE_URL}/admin/dashboard`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
           });
           const statsData = await statsResponse.json();
@@ -187,7 +188,8 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </button>
           <button onClick={async () => {
             try {
-              const response = await fetch('/api/v1/dashboard/generate-report', {
+              const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+              const response = await fetch(`${API_BASE_URL}/dashboard/generate-report`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
               });
               if (response.ok) {
@@ -304,7 +306,8 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             }
             
             try {
-              const response = await fetch('/api/v1/admin/recommendations', {
+              const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+              const response = await fetch(`${API_BASE_URL}/admin/recommendations`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
