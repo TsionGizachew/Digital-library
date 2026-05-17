@@ -120,6 +120,16 @@ app.get('/', (req, res) => {
   });
 });
 
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Server is healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Auth routes
 app.post('/api/v1/auth/login', (req, res) => {
   console.log('📥 Login request received:', req.body);
