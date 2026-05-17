@@ -1973,6 +1973,72 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Missing routes that frontend needs
+app.get('/api/v1/events-announcements/events', (req, res) => {
+  console.log('📥 Events request');
+  res.json({
+    success: true,
+    data: []
+  });
+});
+
+app.get('/api/v1/events-announcements/announcements', (req, res) => {
+  console.log('📥 Public announcements request');
+  res.json({
+    success: true,
+    data: []
+  });
+});
+
+app.get('/api/v1/dashboard/home-stats', (req, res) => {
+  console.log('📥 Home stats request');
+  res.json({
+    success: true,
+    data: {
+      totalBooks: 1250,
+      totalMembers: 340,
+      activeLoans: 89,
+      overdueBooks: 12
+    }
+  });
+});
+
+app.get('/api/v1/books/featured', (req, res) => {
+  console.log('📥 Featured books request');
+  res.json({
+    success: true,
+    data: []
+  });
+});
+
+app.get('/api/v1/books/stats', (req, res) => {
+  console.log('📥 Books stats request');
+  res.json({
+    success: true,
+    data: {
+      total: 1250,
+      available: 1161,
+      borrowed: 89
+    }
+  });
+});
+
+app.get('/api/v1/users', (req, res) => {
+  console.log('📥 Users request');
+  res.json({
+    success: true,
+    data: []
+  });
+});
+
+app.get('/api/v1/dashboard/notifications', (req, res) => {
+  console.log('📥 Notifications request');
+  res.json({
+    success: true,
+    data: []
+  });
+});
+
 // 404 handler
 app.use('*', (req, res) => {
   console.log('❌ Route not found:', req.method, req.originalUrl);
